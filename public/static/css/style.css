@@ -1,0 +1,180 @@
+@CHARSET "UTF-8";
+/*!
+ * Author	: Shannon
+ * Date		: 2016-12-03 ‏‎11:01:02
+ */
+body { 
+	padding-top: 70px;
+	background-color: #fbfbfb;
+}
+body.login-body {
+/* 	background: url("../img/login-bg.jpg"); */
+	background-repeat: no-repeat;
+	background-position: inherit;
+}
+.delete-line {
+	text-decoration: line-through;
+}
+.table table { 
+	text-align: center;
+	margin-bottom: 0px;
+}
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+	vertical-align: middle;
+	text-align: center;
+}
+.panel-heading>h4 {
+	font-size: 16px;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+.footer {
+	padding-top: 50px;
+	padding-bottom: 40px;
+}
+
+.panel-body .row, .panel-body [data-area=logs] {
+	margin-top: 15px;
+}
+.cur-term {
+	position: absolute;
+	display: block;
+	z-index: 666;
+}
+.panel-table {
+	margin-bottom: 25px;
+}
+.jumbotron .label {
+	font-size: 100%;
+}
+td>.label, td>a>.label{
+    padding: .3em 1em .3em;
+    font-size: 100%;
+}
+.thumbnail>img {
+	width: 96%;
+	margin-top: 2%;
+}
+.loading-icon {
+  height: 50px;
+  position: relative;
+  opacity: 0.9;
+  display: block;
+}
+.modal-footer .loading-icon {
+	height:auto;
+  position: relative;
+  opacity: 0.9;
+  display: block;
+}
+.loading-icon:before {
+  content: '';
+  height: 20px;
+  width: 20px;
+  border: solid 2px transparent;
+  position: absolute;
+  left: 50%;
+  margin-left: -10px;
+  border-radius: 50%;
+  -webkit-animation: jconfirm-rotate 1s infinite linear;
+          animation: jconfirm-rotate 1s infinite linear;
+  border-bottom-color: #aaa;
+  top: 50%;
+  margin-top: -10px;
+}
+.loading-icon:after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  margin-left: -15px;
+}
+.popover-footer {
+	float: right;
+}
+/* .btn:hover { */
+/* 	-webkit-animation: btn-icon-hover-rotate 0.5s; */
+/* 	animation: btn-icon-hover-rotate 0.5s; */
+/* } */
+.popover-footer>button {
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+.modal-header .glyphicon {
+	top: 3px;
+}
+.btn-return-top {
+	position: fixed;
+	bottom: 10%;
+	right: 2.5%;
+	z-index: 999;
+	width: 50px;
+	height: 50px;
+	opacity: 0.4;
+	text-align:center;
+	padding:18px;
+	border: 0px;
+	border-radius: 6px;
+	background-color: #eee;
+}
+.btn-return-top>.glyphicon {
+	top: -1px;
+}
+.btn-return-top:hover {
+	opacity: 0.8;
+}
+.dn{display: none;}
+.list-empty {
+	font-size: 30px;
+	text-align: center;
+	font-family: inherit;
+    font-weight: 500;
+	margin: 10px;
+	color: #777;
+}
+.list-empty>.glyphicon {
+	top: 5px;
+}
+.btn-refresh>span.refreshing {
+	  -webkit-animation: jconfirm-rotate 1s infinite linear;
+          animation: jconfirm-rotate 1s infinite linear;
+}
+td>a:hover, td>a:visited, td>a:link, td>a:active {
+	outline: none;
+	text-decoration: none;
+}
+img.img-captcha {
+	width: 125px;
+	margin-top: -5px;
+	margin-left: -25px; 
+}
+@-webkit-keyframes jconfirm-rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes jconfirm-rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes btn-icon-hover-rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+.callout{padding:20px;margin:20px 0;border:1px solid #eee;border-left-width:5px;border-radius:3px}.callout h4{margin-top:0;margin-bottom:5px}.callout p:last-child{margin-bottom:0}.callout code{border-radius:3px}.callout+.callout{margin-top:-5px}.callout-danger{border-left-color:#d9534f}.callout-danger h4{color:#d9534f}.callout-warning{border-left-color:#f0ad4e}.callout-warning h4{color:#f0ad4e}.callout-info{border-left-color:#5bc0de}.callout-info h4{color:#5bc0de}.callout-success{border-left-color:#5cb85c}.callout-success h4{color:#5cb85c}

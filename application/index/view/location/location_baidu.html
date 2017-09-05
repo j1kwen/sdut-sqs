@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+	<style type="text/css">
+	body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<link href="__STATIC__/css/bootstrap.btn.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+	<title>地图展示</title>
+</head>
+<body>
+	<div id="allmap"></div>
+	
+	<!-- 宿舍楼选择 -->
+	<div class="btn-group dropup" style="position: fixed; bottom: 72px; left: 4px;">
+	  <button type="button" class="btn btn-default" id="cur-dormitory" data-key="">未选择公寓</button>
+	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    <span class="caret"></span>
+	    <span class="sr-only"></span>
+	  </button>
+	  <ul class="dropdown-menu" id="dormitory-menu" style="max-height: 300px; overflow: scroll;">
+	  	{foreach name="room_name" item="item" key="key"}
+	  	{if condition="strchr($key,'D') eq false"}
+	    <li><a href="javascript:void(0);" data-key="{$key}" class="area-west">{$item}</a></li>
+	    {else /}
+	    <li><a href="javascript:void(0);" data-key="{$key}" style="display:none;" class="area-east">{$item}</a></li>
+	    {/if}
+	    {/foreach}
+	  </ul>
+	</div>
+	<!-- 校区选择 -->
+	<div class="btn-group" id="area-select" role="group" aria-label="..." style="position: fixed; bottom: 22px; left: 4px;">
+	  <button type="button" class="btn btn-primary active" data-key="west">西校区</button>
+	  <button type="button" class="btn btn-default" data-key="east">东校区</button>
+	</div>
+	
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="__STATIC__/js/jquery-1.12.2.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="__STATIC__/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=QVNFI7n9ys7eVUM50Hw3GgLV1cXRUmLc"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/building/range.js"></script>
+<script type="text/javascript">
+	// 百度地图API功能
+	// 创建Map实例
+	var map = new BMap.Map("allmap", {
+		mapType: BMAP_HYBRID_MAP,
+		enableHighResolution: true
+	});
+	var point = area_point["west"]; // 设置标记点
+	
+	// 设置Map初始参数
+	map.centerAndZoom(point, 20); // 初始化地图,设置中心点坐标和地图级别
+	map.enableScrollWheelZoom(); //开启鼠标滚轮缩放
+	map.enableKeyboard(); // 启用键盘操作
+	map.enableInertialDragging(); // 惯性拖拽
+	map.enableContinuousZoom(); // 连续缩放
+	
+	for(var i in ranges) {
+   		map.addOverlay(ranges[i]);   //增加多边形
+	}
+	
+	// 控件：左上角，添加比例尺
+	var top_left_control = new BMap.ScaleControl({
+		anchor: BMAP_ANCHOR_TOP_LEFT,
+		offset: {
+			width: 10,
+			height: 10 
+		}
+	});
+	// 控件：左上角，添加默认缩放平移控件
+	var top_left_navigation = new BMap.NavigationControl({
+		type: BMAP_NAVIGATION_CONTROL_LARGE,
+		offset: {
+			width: 10,
+			height: 52
+		}
+	});
+	// 控件：地图类型控件
+	var mapTypes = new BMap.MapTypeControl({
+		mapTypes: [
+			BMAP_NORMAL_MAP,
+			BMAP_SATELLITE_MAP,
+			BMAP_HYBRID_MAP
+		],
+		offset: {
+			width: 10,
+			height: 15 
+		}
+	});
+	// 控件：定位
+	var geolocation = new BMap.GeolocationControl({
+		anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+		offset: {
+			width: 10,
+			height: 10 
+		}
+	});
+	
+	var panorama = new BMap.PanoramaControl({
+		offset: {
+			width: 10,
+			height: 60 
+		}
+	});
+	
+	// 控件添加到地图实例
+	map.addControl(top_left_control);        
+	map.addControl(top_left_navigation);
+	map.addControl(mapTypes);
+	map.addControl(geolocation);
+	map.addControl(panorama);
+
+	var marker = new BMap.Marker(point);  // 创建标注
+	marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+	var label = new BMap.Label("西校区 - 艺术广场",{offset:new BMap.Size(20,10)}); // 设置标注文字
+	label.setStyle({
+		fontWeight: "bolder",
+		color: "white",
+		borderRadius: "6px",
+		borderWidth: "2px",
+		borderColor: "transparent",
+		backgroundColor: "#6D6D6D",
+		padding: "10px"
+	});
+	marker.setLabel(label); // 将文字添加到标注中
+    map.addOverlay(marker); //在地图中添加marker
+    
+
+//     var p1 = new BMap.Point(118.016783,36.815823); // 起点
+//     var p2 = new BMap.Point(118.007387,36.821211); // 终点
+
+//     var driving = new BMap.WalkingRoute(map, {
+//     	renderOptions: {
+//     		map: map, 
+//     		selectFirstResult: false,
+//     		autoViewport: true,
+//     		enableDragging : true
+//     	}
+//     });
+//     driving.search(p1, p2);
+	
+	function moveMap(data, l_name) {
+		map.panTo(room_point[data], {
+	    	noAnimation: false
+	    });
+		marker.setPosition(room_point[data]);
+		label.setContent(l_name);
+	}
+	
+	function moveMapByPoint(point, l_name) {
+		map.panTo(point, {
+	    	noAnimation: false
+	    });
+		marker.setPosition(point);
+		label.setContent(l_name);
+	}
+	
+$(document).ready(function() {
+	$("#dormitory-menu>li>a").click(function() {
+		var dorm = $(this).text();
+		var d_key = $(this).attr("data-key");
+		$("#cur-dormitory").text(dorm).attr('data-key',d_key).click();
+	});
+	$("#cur-dormitory").click(function() {
+		var dorm = $(this).attr('data-key');
+		var d_name = $(this).text();
+		if(dorm == "") {
+			return;
+		}
+		moveMap(dorm, d_name);
+	});
+	$("#area-select>button").click(function() {
+		var d_key = $(this).attr("data-key");
+		moveMapByPoint(area_point[d_key], area_label[d_key]);
+		if($(this).hasClass("active")) {
+			return;
+		}
+		$("#area-select").children(".active").removeClass("active").removeClass("btn-primary").addClass("btn-default");
+		$(this).removeClass("btn-default").addClass("active").addClass("btn-primary");
+		$("#dormitory-menu>li>a").css('display', 'none');
+		$(".area-" + d_key).css('display', 'block');
+		$("#cur-dormitory").text("未选择公寓").attr("data-key", "");
+		
+	});
+});
+</script>
+</body>
+</html>

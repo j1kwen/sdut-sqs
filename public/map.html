@@ -1,0 +1,168 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=QVNFI7n9ys7eVUM50Hw3GgLV1cXRUmLc"></script>
+	<title>坐标拾取及代码生成工具</title>
+</head>
+<body>
+	<div id="allmap"></div>
+	<button style="position: fixed;
+    width: 95px;
+    height: 40px;
+    bottom: 255px;
+    left: 2px;" onclick="moveToEast();">去东校区</button>
+    <button style="position: fixed;
+    width: 95px;
+    height: 40px;
+    bottom: 255px;
+    left: 107px;" onclick="moveToWest();">去西校区</button>
+	<textarea cols="20" rows="50" id="cp_area" style="position: fixed;
+    width: 200px;
+    height: 250px;
+    bottom: 2px;
+    left: 2px;"></textarea>
+    <button style="position: fixed;
+    width: 60;
+    height: 40px;
+    bottom: 2px;
+    left: 2px;" onclick="cls();">Clean</button>
+    <button style="position: fixed;
+    width: 60px;
+    height: 40px;
+    bottom: 2px;
+    left: 72px;" onclick="cpy();">Range</button>
+    <button style="position: fixed;
+    width: 60px;
+    height: 40px;
+    bottom: 2px;
+    left: 142px;" onclick="cpySingle();">Single</button>
+</body>
+</html>
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");    // 创建Map实例
+	var point = new BMap.Point(118.006624,36.820673); // 设置标记点
+	map.centerAndZoom(point, 20);  // 初始化地图,设置中心点坐标和地图级别
+	map.setMapType(BMAP_HYBRID_MAP); // 设置为卫星地图  
+	map.enableScrollWheelZoom(); //开启鼠标滚轮缩放
+	map.enableKeyboard(); // 启用键盘操作
+	map.enableInertialDragging(); // 惯性拖拽
+	map.enableContinuousZoom(); // 连续缩放
+	map.setDefaultCursor("default");
+	
+	// 控件：左上角，添加比例尺
+	var top_left_control = new BMap.ScaleControl({
+		anchor: BMAP_ANCHOR_TOP_LEFT,
+		offset: {
+			width: 10,
+			height: 10 
+		}
+	});
+	// 控件：左上角，添加默认缩放平移控件
+	var top_left_navigation = new BMap.NavigationControl({
+		type: BMAP_NAVIGATION_CONTROL_LARGE,
+		offset: {
+			width: 10,
+			height: 52
+		}
+	});
+	// 控件：地图类型控件
+	var mapTypes = new BMap.MapTypeControl({
+		mapTypes: [
+			BMAP_NORMAL_MAP,
+			BMAP_SATELLITE_MAP,
+			BMAP_HYBRID_MAP
+		],
+		offset: {
+			width: 10,
+			height: 15 
+		}
+	});
+	// 控件：定位
+	var geolocation = new BMap.GeolocationControl({
+		anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+		offset: {
+			width: 10,
+			height: 10 
+		}
+	});
+	
+	var panorama = new BMap.PanoramaControl({
+		offset: {
+			width: 10,
+			height: 60 
+		}
+	});
+	
+	// 控件添加到地图实例
+	map.addControl(top_left_control);        
+	map.addControl(top_left_navigation);
+	map.addControl(mapTypes);
+	map.addControl(geolocation);
+	map.addControl(panorama);
+	
+	map.addEventListener("click",function(e){
+		var point = e.point.lng + "," + e.point.lat;
+		var area = document.getElementById("cp_area");
+		area.innerHTML += point + "\n";
+		
+	});
+	
+	function cpySingle() {
+		//"11": new BMap.Point(118.007387,36.821215)
+		var area = document.getElementById("cp_area");
+		var arr = area.innerHTML.split("\n");
+		var res = "";
+		for(var i = 0 ; i < arr.length; i++) {
+			if(arr[i].trim() == "") {
+				continue;
+			}
+			var str = ",\n"+
+			"    \"\": new BMap.Point(" + arr[i] + ")";
+			res += str;
+		}
+		area.innerHTML = res;
+		area.select();
+		document.execCommand("Copy");
+		area.innerHTML = "";
+	}
+	
+	function cpy() {
+		var area = document.getElementById("cp_area");
+		var arr = area.innerHTML.split("\n");
+		var str = ",\n\n    // \n"+
+		"    new BMap.Polygon([\n";
+		for(var i = 0 ; i < arr.length; i++) {
+			if(arr[i].trim() == "") {
+				continue;
+			}
+			str += "        new BMap.Point(" + arr[i] + "),\n"
+		}
+		str = str.substr(0, str.length-2);
+        str += "\n    ], {strokeColor:\"blue\", strokeWeight:2, strokeOpacity:0.5})";
+		area.innerHTML = str;
+		area.select();
+		document.execCommand("Copy");
+		area.innerHTML = "";
+	}
+	function cls() {
+		var area = document.getElementById("cp_area");
+		area.select();
+		area.innerHTML = "";
+	}
+	
+	function moveToEast() {
+		map.panTo(new BMap.Point(118.046617,36.816989), {
+	    	noAnimation: false
+	    });
+	}
+	function moveToWest() {
+		map.panTo(new BMap.Point(118.006624,36.820673), {
+	    	noAnimation: false
+	    });
+	}
+</script>

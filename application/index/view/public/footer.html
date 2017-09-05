@@ -1,0 +1,93 @@
+<hr/>
+<footer class="footer"style="padding-top: 0px;">
+  <div class="container">
+    <div class="text-center">
+     Copyright © 2016-2017&nbsp;
+     <strong><a href="http://www.sdut.edu.cn/" target="_blank">SDUT</a></strong>&nbsp;
+     All Rights Reserved.
+   </div>
+   <div class="text-center">
+     Designed by <a id="about-me" href="javascript:void(0);" title="小黄毛">Shannon</a>&amp;<a id="about-uk" href="javascript:void(0);" title="小鱼干">Unspoken</a>.&nbsp;
+	 <a href="{:url('index/location/location')}" target="_blank" title="查看地图"><span class="glyphicon glyphicon-send"></span></a>
+   </div>
+   <div class="text-center">
+     京ICP备17047375号-1
+   </div>
+  </div>
+</footer>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="__STATIC__/js/jquery-1.12.2.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="__STATIC__/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__STATIC__/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery-confirm.min.js"></script>
+<script src="__STATIC__/js/main.js"></script>
+<script>
+$(document).ready(function() {
+	$("#about-me, #about-uk").click(function() {
+		var who = $(this).attr("id");
+		var img_content;
+		if(who == "about-me") {
+			img_content = '<img src="__STATIC__/img/me.jpg" class="img-responsive" alt="Shannon">'
+		} else {
+			img_content = '<img src="__STATIC__/img/uk.jpg" class="img-responsive" alt="Unspoken">'
+		}
+		
+		$.alert({
+			theme: 'white',
+			keyboardEnabled: false,
+			backgroundDismiss: false,
+			title: false,
+			content: img_content,
+			buttons: {
+				NO: {
+					btnClass: "btn btn-danger disabled",
+					action: function() {
+						$.alert({
+							content: '<img src="__STATIC__/img/gaoshi.jpg" class="img-responsive" alt="Unspoken"><p style="padding-top:16px;"><strong>你以为改了代码就能点NO了吗？？？天真！</strong></p>',
+							title: "搞事？？？",
+							keyboardEnabled: false,
+							backgroundDismiss: false,
+							icon: "glyphicon glyphicon-question-sign",
+							buttons: {
+								NO: {
+									btnClass: "btn btn-danger disabled",
+									action: function() {
+										$.alert({
+											keyboardEnabled: false,
+											backgroundDismiss: false,
+											content: '<img src="__STATIC__/img/xiaozhang.jpg" class="img-responsive" alt="Unspoken"><p style="padding-top:16px;"><strong>exm？？？居然还改？过分了啊！</strong></p>',
+											title: "还改？？？",
+											icon: "glyphicon glyphicon-question-sign",
+											buttons: {
+												错了错了QAQ: {
+													btnClass: "btn btn-danger"
+												}
+											}
+										});
+										return false;
+									}
+								},
+								好叭QvQ: {
+									btnClass: "btn btn-info"
+								}
+							}
+						});
+						return false;
+					}
+				},
+				么么哒o3o: {
+					btnClass: "btn btn-primary",
+					action: function() {
+						$.ajax({
+							url: "{:url('index/index/mmd')}?who=" + (who == "about-me" ? "me" : "uk"),
+							method: "get"
+						});
+					}
+				}
+			}
+		});
+	});
+});
+</script>

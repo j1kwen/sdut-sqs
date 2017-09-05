@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+{include file="public/header" /}
+<body style="padding-top: 0px;">
+   <div class="container">
+   <div class="page-header col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
+	  <h1>日志查看
+	  	<small>Logs
+		</small>
+	  </h1>
+	</div>
+	<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+	
+	  <!-- Nav tabs -->
+	  <ul class="nav nav-tabs" role="tablist">
+	    <li role="presentation" class="active"><a href="#log-access" aria-controls="log-access" role="tab" data-toggle="tab">访问 <span class="badge" id="badge-access"></span></a></li>
+	    <li role="presentation"><a href="#log-search-self" aria-controls="log-search-self" role="tab" data-toggle="tab">查宿舍 <span class="badge" id="badge-search-self"></span></a></li>
+	    <li role="presentation"><a href="#log-search-roommate" aria-controls="log-search-roommate" role="tab" data-toggle="tab">査室友 <span class="badge" id="badge-search-roommate"></span></a></li>
+	    <li role="presentation"><a href="#log-love" aria-controls="log-love" role="tab" data-toggle="tab">么么哒 <span class="badge" id="badge-love"></span></a></li>
+	  	<li role="presentation"><a href="#log-map" aria-controls="log-map" role="tab" data-toggle="tab">看地图 <span class="badge" id="badge-map"></span></a></li>
+	    <li role="presentation"><a href="#log-grade" aria-controls="log-grade" role="tab" data-toggle="tab">查绩点 <span class="badge" id="badge-grade"></span></a></li>
+	  </ul>
+	
+	  <!-- Tab panes -->
+	  <div class="tab-content">
+	    <div role="tabpanel" class="tab-pane active" id="log-access" data-type="0">
+	    
+	    </div>
+	    <div role="tabpanel" class="tab-pane" id="log-search-self" data-type="1">
+	    
+	    </div>
+	    <div role="tabpanel" class="tab-pane" id="log-search-roommate" data-type="2">
+	
+		</div>
+	    <div role="tabpanel" class="tab-pane" id="log-love" data-type="3">
+		
+		</div>
+		<div role="tabpanel" class="tab-pane" id="log-map" data-type="4">
+		
+		</div>
+		<div role="tabpanel" class="tab-pane" id="log-grade" data-type="5">
+		
+		</div>
+	  </div>
+	
+	</div>
+
+   </div>
+   <!-- /.container -->
+{include file="public/footer" /}
+<script type="text/javascript">
+$(document).ready(function() {
+
+	
+	$("a[data-toggle='tab']").click(function() {
+		var cls_name = $(this).attr('href');
+		var _url = "{:url('index/logs/item')}";
+		var _type = $(cls_name).attr('data-type');
+		var _size = "20";
+		var _page = "1";
+		var _data = "type=" + _type 
+				  + "&size=" + _size 
+				  + "&page=" + _page;
+		$(cls_name).html('<div class="loading-icon"></div>');
+		$.ajax({
+			url: _url,
+			data: _data,
+			method: "POST",
+			success: function(resp) {
+				$(cls_name).html(resp);
+			}, 
+			error: function() {
+				$(cls_name).html('<div class="list-empty"><span class="glyphicon glyphicon-remove-circle"></span>&nbsp;发生错误</div>');
+			}
+		});
+	});
+	$("a[href='#log-access']").click();
+});
+</script>
+</body>
+
+</html>

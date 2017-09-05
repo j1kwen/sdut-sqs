@@ -1,0 +1,187 @@
+{if condition="$code neq 0"}
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;
+  {$message}&nbsp;({$status})
+</div>
+{else /}
+
+<div class="panel panel-{$color_rep[$rep]}">
+	<div class="panel-heading">
+		<h4><span class="glyphicon {$icon_rep[$rep]}"></span>&nbsp;{$message_rep[$rep]}</h4>
+	</div>
+	<div class="panel-body">
+		<table class="table table-hover table-bordered" style="margin-bottom: 0px;">
+			<tbody>
+				<tr class="active"><td colspan="2"><strong>学生信息</strong></td></tr>
+				<tr class=""><td>学号</td><td><strong>{$data->student->id}</strong></td></tr>
+				<tr class=""><td>姓名</td><td>{$data->student->name}</td></tr>
+				<tr class=""><td>性别</td><td>{$data->student->gender}</td></tr>
+				<tr class=""><td>专业</td><td>{$data->student->major}</td></tr>
+				<tr class=""><td>班级</td><td>{$data->student->cls}</td></tr>
+				<tr class=""><td>层次</td><td>{$data->student->level}</td></tr>
+				<tr style="height: 15px;"></tr>
+				<tr class="active"><td colspan="2"><strong>主修专业信息</strong></td></tr>
+				<tr class=""><td>绩点</td><td><span class="label label-{$color_rep[$rep]}">{$data->major->grade}</span></td></tr>
+				<tr class=""><td>已修/应修学分</td><td><strong>{$data->major->point}/{$data->major->totalPoint}</strong></td></tr>
+				<tr class=""><td>公选课学分</td><td>{$data->major->elective}</td></tr>
+				<tr><td colspan="2"><button class="btn btn-{$color_rep[$rep]} btn-find-grade" style="width: 100%;" data-target="#major-grade" data-title="主修成绩（{:count($data->major->list)}）" data-btn-color="{$color_rep[$rep]}" data-title-color="{$color_alert[$rep]}">查看主修成绩（共{:count($data->major->list)}项）</button></td></tr>
+				{if condition="$has_minor"}
+				<tr style="height: 15px;"></tr>
+				<tr class="active"><td colspan="2"><strong>辅修专业信息</strong></td></tr>
+				<tr class=""><td>绩点</td><td><span class="label label-{$color_rep[$rep2]}">{$data->minor->grade}</span></td></tr>
+				<tr class=""><td>已修/应修学分</td><td><strong>{$data->minor->point}/{$data->minor->totalPoint}</strong></td></tr>
+				<tr><td colspan="2"><button class="btn btn-{$color_rep[$rep2]} btn-find-grade" style="width: 100%;" data-target="#minor-grade" data-title="辅修成绩（{:count($data->minor->list)}）" data-btn-color="{$color_rep[$rep2]}" data-title-color="{$color_alert[$rep2]}">查看辅修成绩（共{:count($data->minor->list)}项）</button></td></tr>
+				{/if}
+			</tbody>
+		</table>
+	</div>
+</div>
+<style>
+.grade-name {
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    position: absolute;
+    left: 36px;
+    right: 65px;
+    vertical-align: middle;
+}
+.label-grade {
+    display: inline-block;
+    position: absolute;
+    right: 15px;
+    padding-top: 4px;
+}
+.panel-term-head {
+    text-align: center;
+    border: none;
+    box-shadow: none;
+}
+.panel-term-body {
+	padding-bottom: 2px;
+}
+.panel-term-body>strong {
+	font-size: 1.2em;
+}
+
+</style>
+<div id="major-grade" style="">
+<div class="panel-group" id="accordion-major" role="tablist" aria-multiselectable="true">
+{foreach name="$data->major->list" item="item" key="key"}
+  {if condition="!isset($chk_set[$item->term])"}
+  <div class="panel panel-default panel-term-head">
+    <div class="panel-body panel-term-body">
+	    <strong>{$item->term}</strong>
+    </div>
+  </div>
+  {php}$chk_set[$item->term]=1;{/php}
+  {/if}
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading-major-{$key}" data-toggle="collapse" href="#collapse-major-{$key}" aria-expanded="true" aria-controls="collapse-major-{$key}">
+	  <span class="caret"></span>&nbsp;
+	  <span class="grade-name">{$item->name}</span>
+      <span class="label label-{:color_class($item->origGrade)} label-grade" style="{:strlen($item->reGrade)==0||(color_class($item->origGrade)!=color_class($item->reGrade))?'':'opacity: 0.5;'}">{:strlen($item->reGrade)==0?$item->origGrade:$item->reGrade.'x'}</span>
+      <span class="label label-{:color_class($item->reGrade)} label-grade">{$item->reGrade}</span>
+    </div>
+    <div id="collapse-major-{$key}" class="panel-collapse collapse collapse-grade" role="tabpanel" aria-labelledby="heading-major-{$key}">
+      <div class="panel-body">
+        <table class="table table-hover table-bordered" style="margin-bottom: 0px;">
+			<tbody>
+				<tr class=""><td>学期</td><td>{$item->term}</td></tr>
+				<tr class=""><td>课程名</td><td>{$item->name}</td></tr>
+				<tr class=""><td>课程性质</td><td>{$item->type}</td></tr>
+				<tr class=""><td>学分</td><td>{$item->point}</td></tr>
+				<tr class=""><td>原考成绩</td><td><span class="label label-{:color_class($item->origGrade)}">{$item->origGrade}</span></td></tr>
+				<tr class=""><td>重考成绩</td><td><span class="label label-{:color_class($item->reGrade)}">{$item->reGrade}</span></td></tr>
+			</tbody>
+		</table>
+      </div>
+    </div>
+  </div>
+{/foreach}
+</div>
+<script>
+$(".collapse-grade").on('hidden.bs.collapse', function () {
+	$(this).parent().removeClass("dropup");
+});
+$(".collapse-grade").on('shown.bs.collapse', function () {
+	$(this).parent().addClass("dropup");
+});
+</script>
+</div>
+
+<div id="minor-grade" style="">
+<div class="panel-group" id="accordion-major" role="tablist" aria-multiselectable="true">
+{foreach name="$data->minor->list" item="item" key="key"}
+  {if condition="!isset($chk_set2[$item->term])"}
+  <div class="panel panel-default panel-term-head">
+    <div class="panel-body panel-term-body">
+	    <strong>{$item->term}</strong>
+    </div>
+  </div>
+  {php}$chk_set2[$item->term]=1;{/php}
+  {/if}
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading-minor-{$key}" data-toggle="collapse" href="#collapse-minor-{$key}" aria-expanded="true" aria-controls="collapse-minor-{$key}">
+	        <span class="caret"></span>&nbsp;
+	        <span class="grade-name">{$item->name}</span>
+        	<span class="label label-{:color_class($item->origGrade)} label-grade" style="{:strlen($item->reGrade)==0||(color_class($item->origGrade)!=color_class($item->reGrade))?'':'opacity: 0.5;'}">{:strlen($item->reGrade)==0?$item->origGrade:$item->reGrade.'x'}</span>
+        	<span class="label label-{:color_class($item->reGrade)} label-grade">{$item->reGrade}</span>
+    </div>
+    <div id="collapse-minor-{$key}" class="panel-collapse collapse collapse-grade" role="tabpanel" aria-labelledby="heading-minor-{$key}">
+      <div class="panel-body">
+        <table class="table table-hover table-bordered" style="margin-bottom: 0px;">
+			<tbody>
+				<tr class=""><td>学期</td><td>{$item->term}</td></tr>
+				<tr class=""><td>课程名</td><td>{$item->name}</td></tr>
+				<tr class=""><td>课程性质</td><td>{$item->type}</td></tr>
+				<tr class=""><td>学分</td><td>{$item->point}</td></tr>
+				<tr class=""><td>原考成绩</td><td><span class="label label-{:color_class($item->origGrade)}">{$item->origGrade}</span></td></tr>
+				<tr class=""><td>重考成绩</td><td><span class="label label-{:color_class($item->reGrade)}">{$item->reGrade}</span></td></tr>
+			</tbody>
+		</table>
+      </div>
+    </div>
+  </div>
+{/foreach}
+</div>
+<script>
+$(".collapse-grade").on('hidden.bs.collapse', function () {
+	$(this).parent().removeClass("dropup");
+});
+$(".collapse-grade").on('shown.bs.collapse', function () {
+	$(this).parent().addClass("dropup");
+});
+</script>
+</div>
+
+<script>
+$(document).ready(function() {
+	var content_minor = $("#minor-grade").html();
+	$("#minor-grade").html('');
+	var content_major = $("#major-grade").html();
+	$("#major-grade").html('');
+	
+	$(".btn-find-grade").click(function() {
+		var a_title = $(this).attr("data-title");
+		var color_title = $(this).attr("data-title-color");
+		var color_btn = $(this).attr("data-btn-color");
+		$.alert({
+			closeIcon: true,
+			type: color_title,
+			icon: 'glyphicon glyphicon-list-alt',
+			title: a_title,
+			content: $(this).attr("data-target")=="#major-grade" ? content_major : content_minor,
+			columnClass: 'col-xs-12 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2',
+			buttons: {
+				确定: {
+					btnClass: "btn btn-" + color_btn,
+				}
+			}
+		});
+	});
+});
+</script>
+{/if}

@@ -1,0 +1,80 @@
+{if condition="empty($list)"}
+{include file="public/list_empty"}
+{else /}
+<table class="table table-hover table-bordered" style="margin-bottom: 0px;">
+<thead>
+<tr>
+<th>IP</th>
+<th>归属地</th>
+<th>内容</th>
+<th>时间</th>
+</tr>
+</thead>
+<tbody>
+{foreach name="list" item="item" key="key"}
+
+	<tr>
+		<td>{$item.ip}</td>
+		<td class="location-col"><a href="javascript:void(0);" class="btn-ip-info" title="点击查看归属地"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+		<td>{$item.content}</td>
+		<td>{$item.dt}</td>
+	</tr>
+
+{/foreach}
+</tbody>
+</table>
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li>
+      <a href="" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li class="active"><a href="javascript:void(0);">{$page}</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li>
+      <a href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+{/if}
+<script>
+$(document).ready(function() {
+
+	$("#badge-access").text("{$cnt[0]['val']}");
+	$("#badge-search-self").text("{$cnt[1]['val']}");
+	$("#badge-search-roommate").text("{$cnt[2]['val']}");
+	$("#badge-love").text("{$cnt[3]['val']}");
+	$("#badge-map").text("{$cnt[4]['val']}");
+	$("#badge-grade").text("{$cnt[5]['val']}");
+	var _local = "http://api.dogest.cn/grade/ip/query?ip=";
+	$(".btn-ip-info").click(function() {
+		var _ip = $(this).parent().prev().text();
+ 		var _self = $(this).parent();
+		$(this).parent().html('<div class="loading-icon" style="height: 0px;"></div>');
+ 		$.ajax({
+			type: "get",
+ 			url: _local + _ip,
+			dataType: "json",
+			success: function(resp) {
+ 				if(resp.code == 0) {
+ 					// success
+ 					var prefix = "";
+ 					if(resp.data.country_id != 'CN') {
+ 						prefix = resp.data.country;
+ 					}
+ 					var _str =  prefix + resp.data.region + " " + resp.data.city + " " + resp.data.isp;
+ 					$(_self).html(_str);
+ 				} else {
+ 					$(_self).html('<span class="glyphicon glyphicon-remove-circle"></span>');
+ 				}
+			}
+ 		});
+	});
+});
+</script>

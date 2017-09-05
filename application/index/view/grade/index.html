@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+{include file="public/header" /}
+<body style="padding-top: 0px;">
+<style>
+a {
+    color: #5cb85c;
+}
+a:hover, a:focus {
+	color: #449d44;
+}
+</style>
+   <div class="container">
+  	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
+	  <h1>绩点查询 
+	  	<small>2014-16级
+		  <a id="get-info" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom">
+		  	<span style="top: 3px;" class="glyphicon glyphicon-info-sign"></span>
+		  </a>
+		</small>
+	  </h1>
+	</div>
+       <div class="row">
+           <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+           		
+               <div class="panel panel-success">
+               	<div class="panel-heading">
+					<h4><span class="glyphicon glyphicon-user"></span>&nbsp;请输入学号&nbsp;<small>Stu.ID</small></h4>
+				</div>
+				<div class="panel-body">
+				<div id="alert-area">
+{if condition="isset($alert)"}
+					<div class="alert alert-warning alert-dismissible" role="alert">
+					  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					  <strong>{$alert}</strong>
+					</div>
+{/if}
+				</div>
+					<form class="form-horizontal" role="form">
+					  <div class="form-group has-feedback">
+					    <div class="col-xs-12">
+					      <input id="ipt-id" type="text" class="form-control" placeholder="学号，限2014-2016级在校生">
+					      <input style="display: none;" type="text" class="form-control" placeholder="Id">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <div class="col-xs-12">
+					      <button style="width: 100%;" type="button" class="btn btn-success" id="btn-login">查询</button>
+					    </div>
+					  </div>
+					</form>
+               </div>
+           </div>
+           <div id="data-area" style="margin-bottom: 50px;">
+           </div>
+       </div>
+
+   </div>
+   <!-- /.container -->
+<hr/>
+<footer class="footer"style="padding-top: 0px;">
+  <div class="container">
+    <div class="text-center">
+     Copyright © 2016-2017&nbsp;
+     <strong><a href="http://www.sdut.edu.cn/" target="_blank">SDUT</a></strong>&nbsp;
+     All Rights Reserved.
+   </div>
+   <div class="text-center">
+     Designed by <a id="about-me" href="javascript:void(0);" title="小黄毛">Shannon</a>&amp;<a id="about-uk" href="javascript:void(0);" title="小鱼干">Unspoken</a>.&nbsp;
+	 <a href="http://api.dogest.cn/grade/index.html" target="_blank" title="API文档"><span class="glyphicon glyphicon-link"></span></a>
+   </div>
+   <div class="text-center">
+     京ICP备17047375号-1 <a id="get-context" href="javascript:void(0);" data-toggle="tooltip" data-placement="top">
+		  	<span style="top: 2px;" class="glyphicon glyphicon-question-sign"></span>
+		  </a>
+   </div>
+  </div>
+</footer>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="__STATIC__/js/jquery-1.12.2.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="__STATIC__/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__STATIC__/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery-confirm.min.js"></script>
+<script src="__STATIC__/js/main.js"></script>
+<script>
+$(document).ready(function() {
+	$("#about-me, #about-uk").click(function() {
+		var who = $(this).attr("id");
+		var img_content;
+		if(who == "about-me") {
+			img_content = '<img src="__STATIC__/img/me.jpg" class="img-responsive" alt="Shannon">'
+		} else {
+			img_content = '<img src="__STATIC__/img/uk.jpg" class="img-responsive" alt="Unspoken">'
+		}
+		
+		$.alert({
+			theme: 'white',
+			keyboardEnabled: false,
+			backgroundDismiss: false,
+			title: false,
+			content: img_content,
+			buttons: {
+				NO: {
+					btnClass: "btn btn-danger disabled",
+					action: function() {
+						$.alert({
+							content: '<img src="__STATIC__/img/gaoshi.jpg" class="img-responsive" alt="Unspoken"><p style="padding-top:16px;"><strong>你以为改了代码就能点NO了吗？？？天真！</strong></p>',
+							title: "搞事？？？",
+							keyboardEnabled: false,
+							backgroundDismiss: false,
+							icon: "glyphicon glyphicon-question-sign",
+							buttons: {
+								NO: {
+									btnClass: "btn btn-danger disabled",
+									action: function() {
+										$.alert({
+											keyboardEnabled: false,
+											backgroundDismiss: false,
+											content: '<img src="__STATIC__/img/xiaozhang.jpg" class="img-responsive" alt="Unspoken"><p style="padding-top:16px;"><strong>exm？？？居然还改？过分了啊！</strong></p>',
+											title: "还改？？？",
+											icon: "glyphicon glyphicon-question-sign",
+											buttons: {
+												错了错了QAQ: {
+													btnClass: "btn btn-danger"
+												}
+											}
+										});
+										return false;
+									}
+								},
+								好叭QvQ: {
+									btnClass: "btn btn-info"
+								}
+							}
+						});
+						return false;
+					}
+				},
+				么么哒o3o: {
+					btnClass: "btn btn-primary",
+					action: function() {
+						$.ajax({
+							url: "{:url('index/index/mmd')}?who=" + (who == "about-me" ? "me" : "uk"),
+							method: "get"
+						});
+					}
+				}
+			}
+		});
+	});
+	$('#get-info').tooltip({
+		trigger: "click hover focus",
+		title: "绩点小于60分无法毕业，60分及以上可获毕业证，70分及以上可获得学位证。某些专业可能要求修满一定的公选课学分方可毕业。该系统也能查成绩，二专也可以查哦~如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~API链接在最下方~更多功能，请自行挖掘~"
+	});
+	$('#get-context').tooltip({
+		trigger: "click hover focus",
+		title: "如有疑问请骚扰作者，qq763461297或者同号邮箱~"
+	});
+	$("#ipt-id").keypress(function() {
+		var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	    	$("#btn-login").click();
+	    }
+	});
+	$("#btn-login").click(function() {
+		if($(this).hasClass("disabled")) {
+			return;
+		}
+		var nec = $(this).parents("form").find(".has-feedback");
+		var isok = true;
+		nec.each(function() {
+			var ipt = $(this).find("input,select");
+			if(ipt.val() == null || ipt.val() == '') {
+				ipt.after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>');
+				$(this).addClass("has-error");
+				if(isok) {
+					ipt.focus();
+				}
+				isok = false;
+			}
+		});
+		if(!isok) {
+			return;
+		}
+		var _url = "{:url('index/grade/item')}";
+		var _data = "id=" + $("#ipt-id").val();
+		$("#data-area").html('<div class="loading-icon"></div>');
+		$(this).addClass("disabled");
+		var _this = $(this);
+		var _btn_text = $(this).text();
+		$(this).text(_btn_text + "中…");
+		$.ajax({
+			url: _url,
+			data: _data,
+			method: "POST",
+			success: function(resp) {
+				$("#data-area").html(resp);
+				$(_this).removeClass("disabled");
+				$(_this).text(_btn_text);
+			}, 
+			error: function() {
+				$("#data-area").html('<div class="list-empty"><span class="glyphicon glyphicon-remove-circle"></span>&nbsp;发生错误</div>');
+				$(_this).removeClass("disabled");
+				$(_this).text(_btn_text);
+			}
+		});
+	});
+});
+</script>
+</body>
+
+</html>

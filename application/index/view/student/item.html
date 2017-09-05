@@ -1,0 +1,106 @@
+{if condition="empty($list)"}
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;
+  <strong>无结果！</strong>请检查姓名是否正确，然后重试！
+</div>
+
+<div class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <span class="glyphicon glyphicon-ok-circle"></span>&nbsp;
+  <strong>当前数据库完整</strong>，若仍查找不到信息，请联系辅导员老师核实！
+</div>
+{else /}
+
+{if condition="count($list) gt 1"/}
+<div class="alert alert-warning" role="alert"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;有人跟你重名哦，看一下哪个是你吧~</div>
+{/if}
+{foreach name="list" item="item" key="key"}
+
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h4><span class="glyphicon glyphicon-search"></span>&nbsp;查询结果#{$key + 1}</h4>
+	</div>
+	<div class="panel-body">
+		<table class="table table-hover table-bordered" style="margin-bottom: 0px;">
+			<tbody data-room="{$item.dormitory}" data-name="{$item.name}">
+				<tr class="warning"><td>学号</td><td>{$item.id}</td></tr>
+				<tr class="info"><td>姓名</td><td>{$item.name}</td></tr>
+				<tr class="danger"><td>性别</td><td>{$item.gender}</td></tr>
+				<tr class="success">
+					<td>宿舍号</td>
+					<td>
+						<strong>{$item.dormitory}</strong>&nbsp;
+						<a class="room-detail" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="{$item.r_name}">
+							<span style="top: 2px;" class="glyphicon glyphicon-question-sign"></span>
+						</a>
+						<a href="{:url('index/location/location?dormitory='.$item.dormitory)}" target="_blank" title="查看公寓楼位置" data-name="{$item.dormitory}">
+							&nbsp;<span style="top: 2px;" class="glyphicon glyphicon-map-marker"></span>
+						</a>
+					</td>
+				</tr>
+				<tr class="info"><td>床位</td><td><strong>{$item.bed}</strong></td></tr>
+				<tr class="warning"><td>班级</td><td>{$item.cls}</td></tr>
+				<tr><td colspan="2"><button class="btn btn-primary btn-find-rommmate" style="width: 100%;">查看室友</button></td></tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{/foreach}
+<script>
+$(".room-detail").tooltip({
+	trigger: "click hover focus",
+});
+$(".btn-find-rommmate").click(function() {
+	
+	var _room = $(this).parents('tbody').attr('data-room');
+	var _name = $(this).parents('tbody').attr('data-name');
+	var _roommate_url = "{:url('index/student/roommate')}";
+	var _data = "room=" + _room + "&name=" + _name;
+	$.alert({
+		closeIcon: true,
+		type: 'blue',
+		icon: 'glyphicon glyphicon-heart',
+		title: _room + '的成员信息',
+		content: function() {
+			var self = this;
+			self.setContent("info");
+			return $.ajax({
+	            url: _roommate_url,
+	            method: 'post',
+	            data: _data
+	        }).done(function (response) {
+	            self.setContent(response);
+	        });
+		},
+		columnClass: 'col-xs-12 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2',
+		buttons: {
+			确定: {
+				btnClass: "btn btn-info",
+			}
+		}
+	});
+// 	$.ajax({
+// 		url: _roommate_url,
+// 		method: "post",
+// 		data: _data,
+// 		success: function(data) {
+// 			$.confirm({
+// 				closeIcon: true,
+// 				type: 'blue',
+// 				icon: 'glyphicon glyphicon-heart',
+// 				title: _room + '的成员信息',
+// 				content: data,
+// 				columnClass: 'col-xs-12 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2',
+// 				buttons: {
+// 					确定: {
+// 						btnClass: "btn btn-info",
+// 					}
+// 				}
+// 			});
+// 		},
+// 	});
+});
+</script>
+{/if}
