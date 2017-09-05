@@ -7,6 +7,7 @@ use think\Request;
 class Index extends BaseController {
 	
     public function index() {
+    	//$this->redirect('Apartment/index');
     	$request = Request::instance();
     	$logs = model('logs');
     	
@@ -25,6 +26,20 @@ class Index extends BaseController {
     			],
     	]);
     	return $this->fetch();
+    }
+    
+    public function test() {
+    	
+    	$this->assign([
+    			'title' => '山东理工大学学生信息查询系统  - SDUT SQS',
+    			'footer_extern_link' => [
+    					'title' => '联系作者',
+    					'href' => 'mailto:763461297@qq.com?subject=【学生查询系统】问题反馈',
+    					'icon' => 'glyphicon glyphicon-envelope',
+    					'target' => '_self',
+    			],
+    	]);
+    	return $this->fetch('index/index');
     }
     
     public function mmd() {

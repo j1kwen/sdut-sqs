@@ -106,14 +106,14 @@ td>.label, td>a>.label{
 	text-align: center;
 }
 .panel-body>a.thumbnail>.glyphicon {
-	font-size: 3.2em;
+	font-size: 2.5em;
 	left: -2px;
-    top: 20px;
+    top: 5px;
 }
 .panel-body>a.thumbnail>strong {
 	position: relative;
 	display: block;
-	top: 20px;
+	top: 5px;
 	overflow: hidden;
 	text-overflow: ellipsis;
     white-space: nowrap;

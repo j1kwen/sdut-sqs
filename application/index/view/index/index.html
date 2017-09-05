@@ -36,6 +36,21 @@
   <!-- /.container -->
 {include file="public/footer" /}
 <script type="text/javascript">
+var resizeThum = function() {
+	var _width = ($(".panel-body-less-padding").width() - 20)*0.332 - 6;
+	$(".panel-body-less-padding>a.thumbnail").each(function() {
+		$(this).width(_width);
+		$(this).height(_width);
+	});
+	$(".panel-body-less-padding>a.thumbnail>.glyphicon").each(function() {
+		$(this).css('top', _width * 0.18);
+		$(this).css('font-size', _width * 0.5);
+	});
+	$(".panel-body-less-padding>a.thumbnail>strong").each(function() {
+		$(this).css('top', _width * 0.22);
+		$(this).css('font-size', _width * 0.125);
+	});
+}
 $(document).ready(function() {
 	$("a.developing").click(function() {
 		$.alert({
@@ -56,23 +71,8 @@ $(document).ready(function() {
 		trigger: "click hover focus",
 		title: "请根据需要选择下方的功能模块。如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~"
 	});
-	function resizeThum() {
-		var _width = ($(".panel-body-less-padding").width() - 20)*0.332 - 6;
-		$(".panel-body-less-padding>a.thumbnail").each(function() {
-			$(this).width(_width);
-			$(this).height(_width);
-		});
-		$(".panel-body-less-padding>a.thumbnail>.glyphicon").each(function() {
-			$(this).css('top', _width * 0.18);
-			$(this).css('font-size', _width * 0.5);
-		});
-		$(".panel-body-less-padding>a.thumbnail>strong").each(function() {
-			$(this).css('top', _width * 0.22);
-			$(this).css('font-size', _width * 0.125);
-		});
-	}
-	resizeThum();
 	$(window).resize(resizeThum);
+	resizeThum();
 });
 </script>
 </body>
