@@ -2,18 +2,10 @@
 <html>
 {include file="public/header" /}
 <body style="padding-top: 0px;">
-<style>
-a {
-    color: #5cb85c;
-}
-a:hover, a:focus {
-	color: #449d44;
-}
-</style>
    <div class="container">
   	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
-	  <h1>绩点查询 
-	  	<small>2014-16级
+	  <h1>宿舍查询 
+	  	<small>2017级
 		  <a id="get-info" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom">
 		  	<span style="top: 3px;" class="glyphicon glyphicon-info-sign"></span>
 		  </a>
@@ -22,30 +14,21 @@ a:hover, a:focus {
 	</div>
        <div class="row">
            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
-           		
-               <div class="panel panel-success">
+               <div class="panel panel-info">
                	<div class="panel-heading">
-					<h4><span class="glyphicon glyphicon-user"></span>&nbsp;请输入学号&nbsp;<small>Stu.ID</small></h4>
+					<h4><span class="glyphicon glyphicon-user"></span>&nbsp;请输入姓名&nbsp;<small>Name</small></h4>
 				</div>
 				<div class="panel-body">
-				<div id="alert-area">
-{if condition="isset($alert)"}
-					<div class="alert alert-warning alert-dismissible" role="alert">
-					  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					  <strong>{$alert}</strong>
-					</div>
-{/if}
-				</div>
 					<form class="form-horizontal" role="form">
 					  <div class="form-group has-feedback">
 					    <div class="col-xs-12">
-					      <input id="ipt-id" type="text" class="form-control" placeholder="学号，限2014-2016级在校生">
-					      <input style="display: none;" type="text" class="form-control" placeholder="Id">
+					      <input id="ipt-user" type="text" class="form-control" placeholder="姓名，仅限2017级新生">
+					      <input style="display: none;" type="text" class="form-control" placeholder="Name">
 					    </div>
 					  </div>
 					  <div class="form-group">
 					    <div class="col-xs-12">
-					      <button style="width: 100%;" type="button" class="btn btn-success" id="btn-login">查询</button>
+					      <button style="width: 100%;" type="button" class="btn btn-info" id="btn-login">查询</button>
 					    </div>
 					  </div>
 					</form>
@@ -54,17 +37,18 @@ a:hover, a:focus {
            <div id="data-area" style="margin-bottom: 50px;">
            </div>
        </div>
-	</div>
+
+   </div>
    </div>
    <!-- /.container -->
 {include file="public/footer" /}
-<script>
+<script type="text/javascript">
 $(document).ready(function() {
 	$('#get-info').tooltip({
 		trigger: "click hover focus",
-		title: "绩点小于60分无法毕业，60分及以上可获毕业证，70分及以上可获得学位证。某些专业可能要求修满一定的公选课学分方可毕业。该系统也能查成绩，二专也可以查哦~如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~API链接在最下方~更多功能，请自行挖掘~"
+		title: "宿舍号以字母D开头的为东校区宿舍，其余情况均为西校区的宿舍，公寓详细信息可点击宿舍号后的问号查看。如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~最下方有地图入口，认真找哦~"
 	});
-	$("#ipt-id").keypress(function() {
+	$("#ipt-user").keypress(function() {
 		var keycode = (event.keyCode ? event.keyCode : event.which);  
 	    if(keycode == '13'){  
 	    	$("#btn-login").click();
@@ -90,8 +74,8 @@ $(document).ready(function() {
 		if(!isok) {
 			return;
 		}
-		var _url = "{:url('index/grade/item')}";
-		var _data = "id=" + $("#ipt-id").val();
+		var _url = "{:url('index/student/item')}";
+		var _data = "name=" + $("#ipt-user").val();
 		$("#data-area").html('<div class="loading-icon"></div>');
 		$(this).addClass("disabled");
 		var _this = $(this);
@@ -113,6 +97,7 @@ $(document).ready(function() {
 			}
 		});
 	});
+	
 });
 </script>
 </body>

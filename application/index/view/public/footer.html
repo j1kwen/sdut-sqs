@@ -8,10 +8,18 @@
    </div>
    <div class="text-center">
      Designed by <a id="about-me" href="javascript:void(0);" title="小黄毛">Shannon</a>&amp;<a id="about-uk" href="javascript:void(0);" title="小鱼干">Unspoken</a>.&nbsp;
-	 <a href="{:url('index/location/location')}" target="_blank" title="查看地图"><span class="glyphicon glyphicon-send"></span></a>
+	 {if condition="isset($footer_extern_link)"}
+	 <a href="{$footer_extern_link['href']|default='javascript:void(0);'}" target="{$footer_extern_link['target']|default='_blank'}" title="{$footer_extern_link['title']|default=''}"><span class="{$footer_extern_link['icon']|default='glyphicon glyphicon-link'}"></span></a>
+	 {/if}
    </div>
    <div class="text-center">
      京ICP备17047375号-1
+     {if condition="isset($footer_extern_context)"}
+	 <a id="get-context" href="{$footer_extern_context['href']|default='javascript:void(0);'}" data-toggle="tooltip" data-placement="top">
+	   <span style="top: 2px;" class="{$footer_extern_context['icon']|default='glyphicon glyphicon-question-sign'}"></span>
+	 </a>
+	  {/if}
+	  
    </div>
   </div>
 </footer>
@@ -25,6 +33,12 @@
 <script src="__STATIC__/js/main.js"></script>
 <script>
 $(document).ready(function() {
+	{if condition="isset($footer_extern_context)"}
+	$('#get-context').tooltip({
+		trigger: "click hover focus",
+		title: "{$footer_extern_context['title']|default='如有疑问请骚扰作者，qq763461297或者同号邮箱~'}"
+	});
+	{/if}
 	$("#about-me, #about-uk").click(function() {
 		var who = $(this).attr("id");
 		var img_content;

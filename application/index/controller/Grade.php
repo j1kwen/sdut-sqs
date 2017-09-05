@@ -18,7 +18,14 @@ class Grade extends BaseController {
 		$logs->log($_ip, 0, 'grade', $_url, '/grade');
 		
 		$this->assign([
-				'title' => '山东理工大学绩点查询系统'
+				'title' => '山东理工大学绩点查询系统',
+				'footer_extern_link' => [
+						'href' => 'http://api.dogest.cn/grade/index.html',
+						'title' => 'API文档',
+				],
+				'footer_extern_context' => [
+						
+				],
 		]);
 		
 		return $this->fetch();

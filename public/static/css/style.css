@@ -36,11 +36,6 @@ body.login-body {
 .panel-body .row, .panel-body [data-area=logs] {
 	margin-top: 15px;
 }
-.cur-term {
-	position: absolute;
-	display: block;
-	z-index: 666;
-}
 .panel-table {
 	margin-bottom: 25px;
 }
@@ -95,6 +90,39 @@ td>.label, td>a>.label{
 /* 	-webkit-animation: btn-icon-hover-rotate 0.5s; */
 /* 	animation: btn-icon-hover-rotate 0.5s; */
 /* } */
+.panel-body-less-padding {
+	padding: 10px;	
+}
+
+.panel-body>a:hover {
+	text-decoration: none;
+}
+
+.panel-body>a.thumbnail {
+	display: inline-block;
+	width: 100px;
+	heigght:100px;
+	margin: 2px 0px;
+	text-align: center;
+}
+.panel-body>a.thumbnail>.glyphicon {
+	font-size: 3.2em;
+	left: -2px;
+    top: 20px;
+}
+.panel-body>a.thumbnail>strong {
+	position: relative;
+	display: block;
+	top: 20px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}
+    
+.btn-func-model {
+	display: block;
+}
+
 .popover-footer>button {
 	margin-right: 10px;
 	margin-bottom: 10px;

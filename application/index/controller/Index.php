@@ -16,7 +16,13 @@ class Index extends BaseController {
     	$logs->log($_ip, 0, 'index', $_url, '/index');
     	
     	$this->assign([
-				'title' => '山东理工大学2017级公寓查询',
+				'title' => '山东理工大学学生信息查询系统  - SDUT SQS',
+    			'footer_extern_link' => [
+    					'title' => '联系作者',
+    					'href' => 'mailto:763461297@qq.com?subject=【学生查询系统】问题反馈',
+    					'icon' => 'glyphicon glyphicon-envelope',
+    					'target' => '_self',
+    			],
     	]);
     	return $this->fetch();
     }

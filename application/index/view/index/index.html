@@ -4,108 +4,75 @@
 <body style="padding-top: 0px;">
    <div class="container">
   	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
-	  <h1>宿舍查询 
-	  	<small>2017级
+	  <h1>学生查询系统
+	  	<small>
 		  <a id="get-info" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom">
 		  	<span style="top: 3px;" class="glyphicon glyphicon-info-sign"></span>
 		  </a>
 		</small>
 	  </h1>
 	</div>
-       <div class="row">
-           <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
-           		
-               <div class="panel panel-info">
-               	<div class="panel-heading">
-					<h4><span class="glyphicon glyphicon-user"></span>&nbsp;请输入姓名&nbsp;<small>Name</small></h4>
-				</div>
-				<div class="panel-body">
-				<div id="alert-area">
-{if condition="isset($alert)"}
-					<div class="alert alert-warning alert-dismissible" role="alert">
-					  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					  <strong>{$alert}</strong>
-					</div>
-{/if}
-				</div>
-					<form class="form-horizontal" role="form">
-					  <div class="form-group has-feedback">
-					    <div class="col-xs-12">
-					      <input id="ipt-user" type="text" class="form-control" placeholder="姓名，仅限2017级新生">
-					      <input style="display: none;" type="text" class="form-control" placeholder="Name">
-					    </div>
-					  </div>
-					  <div class="form-group">
-					    <div class="col-xs-12">
-					      <button style="width: 100%;" type="button" class="btn btn-info" id="btn-login">查询</button>
-					    </div>
-					  </div>
-					</form>
-               </div>
-           </div>
-           <div id="data-area" style="margin-bottom: 50px;">
-           </div>
-       </div>
-
-   </div>
-   <!-- /.container -->
+    <div class="row">
+      <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+        <div class="panel panel-primary">
+          <div class="panel-body panel-body-less-padding">
+            <a href="{:url('index/apartment/index')}" class="thumbnail">
+              <span class="glyphicon glyphicon-home"></span><br/>
+              <strong>查公寓</strong>
+			</a>
+			<a href="{:url('index/grade/index')}" class="thumbnail">
+              <span class="glyphicon glyphicon-list-alt"></span><br/>
+              <strong>查绩点</strong>
+			</a>
+			<a href="{:url('index/student/index')}" class="thumbnail developing">
+              <span class="glyphicon glyphicon-user"></span><br/>
+              <strong>姓名学号查询</strong>
+			</a>
+		  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.container -->
 {include file="public/footer" /}
 <script type="text/javascript">
 $(document).ready(function() {
+	$("a.developing").click(function() {
+		$.alert({
+			type: "blue",
+			icon: 'glyphicon glyphicon-wrench',
+			title: "Developing…",
+			content: "攻城狮正在加班开发中，敬请期待……",
+			columnClass: 'col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4',
+			buttons: {
+				OK: {
+					btnClass: "btn btn-primary"
+				}
+			}
+		});
+		return false;
+	});
 	$('#get-info').tooltip({
 		trigger: "click hover focus",
-		title: "宿舍号以字母D开头的为东校区宿舍，其余情况均为西校区的宿舍，公寓详细信息可点击宿舍号后的问号查看。如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~最下方有地图入口，认真找哦~"
+		title: "请根据需要选择下方的功能模块。如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~"
 	});
-	$("#ipt-user").keypress(function() {
-		var keycode = (event.keyCode ? event.keyCode : event.which);  
-	    if(keycode == '13'){  
-	    	$("#btn-login").click();
-	    }
-	});
-	$("#btn-login").click(function() {
-		if($(this).hasClass("disabled")) {
-			return;
-		}
-		var nec = $(this).parents("form").find(".has-feedback");
-		var isok = true;
-		nec.each(function() {
-			var ipt = $(this).find("input,select");
-			if(ipt.val() == null || ipt.val() == '') {
-				ipt.after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>');
-				$(this).addClass("has-error");
-				if(isok) {
-					ipt.focus();
-				}
-				isok = false;
-			}
+	function resizeThum() {
+		var _width = ($(".panel-body-less-padding").width() - 20)*0.332 - 6;
+		$(".panel-body-less-padding>a.thumbnail").each(function() {
+			$(this).width(_width);
+			$(this).height(_width);
 		});
-		if(!isok) {
-			return;
-		}
-		var _url = "{:url('index/student/item')}";
-		var _data = "name=" + $("#ipt-user").val();
-		$("#data-area").html('<div class="loading-icon"></div>');
-		$(this).addClass("disabled");
-		var _this = $(this);
-		var _btn_text = $(this).text();
-		$(this).text(_btn_text + "中…");
-		$.ajax({
-			url: _url,
-			data: _data,
-			method: "POST",
-			success: function(resp) {
-				$("#data-area").html(resp);
-				$(_this).removeClass("disabled");
-				$(_this).text(_btn_text);
-			}, 
-			error: function() {
-				$("#data-area").html('<div class="list-empty"><span class="glyphicon glyphicon-remove-circle"></span>&nbsp;发生错误</div>');
-				$(_this).removeClass("disabled");
-				$(_this).text(_btn_text);
-			}
+		$(".panel-body-less-padding>a.thumbnail>.glyphicon").each(function() {
+			$(this).css('top', _width * 0.18);
+			$(this).css('font-size', _width * 0.5);
 		});
-	});
-	
+		$(".panel-body-less-padding>a.thumbnail>strong").each(function() {
+			$(this).css('top', _width * 0.22);
+			$(this).css('font-size', _width * 0.125);
+		});
+	}
+	resizeThum();
+	$(window).resize(resizeThum);
 });
 </script>
 </body>
