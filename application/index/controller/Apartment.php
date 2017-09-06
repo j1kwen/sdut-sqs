@@ -15,7 +15,13 @@ class Apartment extends BaseController {
 		
 		$logs->log($_ip, 0, 'apartment', $_url, '/apartment');
 		
+		$m_alert = model('alert');
+		$alert = $m_alert->getAlert('apartment');
+		$button = $m_alert->getButtonStatus('apartment');
+		
 		$this->assign([
+				'alert' => $alert,
+				'button' => $button,
 				'title' => '山东理工大学2017级公寓查询',
 				'footer_extern_link' => [
 						'href' => url('index/location/location'),

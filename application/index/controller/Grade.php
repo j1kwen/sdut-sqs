@@ -17,7 +17,13 @@ class Grade extends BaseController {
 		 
 		$logs->log($_ip, 0, 'grade', $_url, '/grade');
 		
+		$m_alert = model('alert');
+		$alert = $m_alert->getAlert('grade');
+		$button = $m_alert->getButtonStatus('grade');
+		
 		$this->assign([
+				'alert' => $alert,
+				'button' => $button,
 				'title' => '山东理工大学绩点查询系统',
 				'footer_extern_link' => [
 						'href' => 'http://api.dogest.cn/grade/index.html',

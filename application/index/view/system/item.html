@@ -1,0 +1,84 @@
+<style>
+.grade-name {
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    position: absolute;
+    left: 56px;
+    right: 80px;
+    vertical-align: middle;
+}
+.label-grade {
+    display: inline-block;
+    position: absolute;
+    right: 30px;
+    padding-top: 4px;
+}
+.panel-term-head {
+    text-align: center;
+    border: none;
+    box-shadow: none;
+}
+.panel-term-body {
+	padding-bottom: 2px;
+}
+.panel-term-body>strong {
+	font-size: 1.2em;
+}
+
+</style>
+    <table class="table table-hover table-bordered" style="margin-bottom: 0px;">
+		<tbody>
+{if condition="isset($button)"}
+			<tr style="height: 15px;"></tr>
+			<tr class="active"><td colspan="2"><strong>按钮状态设置</strong></td></tr>
+			<tr class=""><td>内容</td><td>{$button['content']}</td></tr>
+{/if}
+{if condition="!empty($alert)"}
+			<tr style="height: 15px;"></tr>
+			<tr class="active"><td colspan="2"><strong>通知消息设置</strong></td></tr>
+{/if}
+{foreach $alert as $item}
+			<tr class=""><td>内容</td><td>{$item['content']}</td></tr>
+{/foreach}
+		</tbody>
+	</table>
+<div id="{$model}-alert-list" style="">
+<div class="panel-group" id="{$model}-accordion-alert" role="tablist" aria-multiselectable="true">
+{foreach name="$alert" item="item" key="key"}
+  <div class="panel panel-{$item['color']|default='success'}">
+    <div class="panel-heading" role="tab" id="{$model}-heading-alert-{$key}" data-toggle="collapse" href="#{$model}-collapse-alert-{$key}" aria-expanded="true" aria-controls="{$model}-collapse-alert-{$key}">
+	        <span class="caret"></span>&nbsp;
+	        <span class="grade-name">{$item['content']}</span>
+        	<span class="label label-{:empty($item['enable'])?'danger':'success'} label-grade" style="">{:empty($item['enable'])?'已禁用':'已启用'}</span>
+    </div>
+    <div id="{$model}-collapse-alert-{$key}" class="panel-collapse collapse collapse-grade" role="tabpanel" aria-labelledby="{$model}-heading-alert-{$key}">
+      <div class="panel-body">
+        <table class="table table-hover table-bordered" style="margin-bottom: 0px;">
+			<tbody>
+				<tr class=""><td>情境类</td><td><span class="label label-{$item['color']|default='success'}">{$item['color']|default='success'}</span></td></tr>
+				<tr class=""><td>图标</td><td><a class="icon-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="{$item['icon']}"><span class="{$item['icon']}"></span></a></td></tr>
+				<tr class=""><td>可关闭</td><td>{:empty($item['close'])?'false':'true'}</td></tr>
+				<tr class=""><td>顺序值</td><td>{$item['idx']}</td></tr>
+				<tr class=""><td colspan="2"><button style="width: 100%;" class="btn btn-{$item['color']}">修改通知</button></td></tr>
+			</tbody>
+		</table>
+      </div>
+    </div>
+  </div>
+{/foreach}
+</div>
+<script>
+$('.icon-tooltip').tooltip({
+	trigger: "click hover focus",
+});
+
+$(".collapse-grade").on('hidden.bs.collapse', function () {
+	$(this).parent().removeClass("dropup");
+});
+$(".collapse-grade").on('shown.bs.collapse', function () {
+	$(this).parent().addClass("dropup");
+});
+</script>
+</div>

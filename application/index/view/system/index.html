@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+{include file="public/header" /}
+<body style="padding-top: 0px;">
+   <div class="container">
+  	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
+	  <h1>后台管理 
+	  	<small>System
+		</small>
+	  </h1>
+	</div>
+       <div class="row">
+           <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+           		<!-- Nav tabs -->
+	  <ul class="nav nav-tabs" role="tablist">
+	  {foreach name="models" item="item" key="key"}
+	    <li role="presentation" class="{:empty($key)?'active':''}"><a href="#sys-{$item['model']}" aria-controls="sys-{$item['model']}" role="tab" data-toggle="tab" data-model="{$item['model']}">{:ucfirst($item['model'])}</a></li>
+      {/foreach}
+	  </ul>
+	
+	  <!-- Tab panes -->
+	  <div class="tab-content">
+	    {foreach name="models" item="item" key="key"}
+	    <div role="tabpanel" class="tab-pane {:empty($key)?'active':''}" id="sys-{$item['model']}" data-type="0">
+	    	
+	    </div>
+	    {/foreach}
+	  </div>
+       </div>
+	</div>
+   </div>
+   <!-- /.container -->
+{include file="public/footer" /}
+<script>
+$(document).ready(function() {
+	$("a[data-toggle='tab']").click(function() {
+		var cls_name = $(this).attr('href');
+		var _url = "{:url('index/system/item')}";
+		var _model = $(this).attr("data-model");
+		var _data = "model=" + _model;
+		$(cls_name).html('<div class="loading-icon"></div>');
+		$.ajax({
+			url: _url,
+			data: _data,
+			method: "get",
+			success: function(resp) {
+				$(cls_name).html(resp);
+			}, 
+			error: function() {
+				$(cls_name).html('<div class="list-empty"><span class="glyphicon glyphicon-remove-circle"></span>&nbsp;发生错误</div>');
+			}
+		});
+	});
+	$("li.active>a").click();
+});
+</script>
+</body>
+
+</html>
