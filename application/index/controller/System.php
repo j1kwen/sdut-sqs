@@ -48,4 +48,27 @@ class System extends BaseController {
 		}
 		
 	}
+	
+	public function modify() {
+		$request = Request::instance();
+		if($request->isAjax()) {
+			
+			$_id = $request->param('id','');
+			if(empty($_model)) {
+				$this->error();
+			}
+			$m_alert = model('alert');
+			$alert = $m_alert->getAlert($_model, 1);
+			$button = $m_alert->getButtonStatus($_model);
+				
+			$this->assign([
+					'alert' => $alert,
+					'button' => $button,
+					'model' => $_model,
+			]);
+			return $this->fetch();
+		} else {
+			$this->error();
+		}
+	}
 }
