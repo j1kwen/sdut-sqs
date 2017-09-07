@@ -4,7 +4,7 @@ namespace app\index\controller;
 use think\Controller;
 use think\Request;
 
-class System extends BaseController {
+class System extends BaseAuthController {
 	
 	public function index() {
 		//$this->redirect('Apartment/index');
@@ -34,8 +34,9 @@ class System extends BaseController {
 				$this->error();
 			}
 			$m_alert = model('alert');
+			$m_button = model('button');
 			$alert = $m_alert->getAlert($_model, 1);
-			$button = $m_alert->getButtonStatus($_model);
+			$button = $m_button->getButton($_model);
 			
 			$this->assign([
 					'alert' => $alert,
@@ -47,6 +48,38 @@ class System extends BaseController {
 			$this->error();
 		}
 		
+	}
+	
+	public function button() {
+		$request = Request::instance();
+		if($request->isAjax()) {
+			$_model = $request->param('model','');
+			$_text = $request->param('text','');
+			$_dis_text = $request->param('dis_text','');
+			$_color = $request->param('color','');
+			$_enable = $request->param('enable','');
+			if(empty($_model) || empty($_text) || empty($_dis_text) || empty($_color)) {
+				return json([
+						'success' => false,
+						'msg' => 'param error',
+				]);
+			}
+			try {				
+				$m_button = model('button');
+				$m_button->modifyButton($_model, $_text, $_dis_text, $_color, $_enable);
+				return json([
+						'success' => true,
+						'msg' => 'success',
+				]);
+			} catch (\think\Exception $e) {
+				return json([
+						'success' => false,
+						'msg' => $e->getMessage(),
+				]);
+			}
+		} else {
+			$this->error();
+		}
 	}
 	
 	public function modify() {

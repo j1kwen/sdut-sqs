@@ -43,7 +43,7 @@
 					  </div>
 					  <div class="form-group">
 					    <div class="col-xs-12">
-					      <button style="width: 100%;" type="button" class="btn btn-info{:isset($button)?' disabled':''}" id="btn-login">{:isset($button)?$button['content']:'查询'}</button>
+					      <button style="width: 100%;" type="button" class="btn btn-{$button['color']} {:empty($button['enable'])?'disabled':''}" id="btn-login">{:empty($button['enable'])?$button['dis_text']:$button['text']}</button>
 					    </div>
 					  </div>
 					</form>

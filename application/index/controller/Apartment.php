@@ -16,8 +16,9 @@ class Apartment extends BaseController {
 		$logs->log($_ip, 0, 'apartment', $_url, '/apartment');
 		
 		$m_alert = model('alert');
+		$m_button = model('button');
 		$alert = $m_alert->getAlert('apartment');
-		$button = $m_alert->getButtonStatus('apartment');
+		$button = $m_button->getButton('apartment');
 		
 		$this->assign([
 				'alert' => $alert,

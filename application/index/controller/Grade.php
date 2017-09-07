@@ -18,8 +18,9 @@ class Grade extends BaseController {
 		$logs->log($_ip, 0, 'grade', $_url, '/grade');
 		
 		$m_alert = model('alert');
+		$m_button = model('button');
 		$alert = $m_alert->getAlert('grade');
-		$button = $m_alert->getButtonStatus('grade');
+		$button = $m_button->getButton('grade');
 		
 		$this->assign([
 				'alert' => $alert,

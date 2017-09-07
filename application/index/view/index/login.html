@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+{include file="public/header" /}
+<body style="padding-top: 0px;">
+   <div class="container">
+  	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
+	  <h1>后台用户登录 
+	  	<small>Admin
+		</small>
+	  </h1>
+	</div>
+		<div class="row">
+			<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+           		<div class="panel panel-info">
+               	<div class="panel-heading">
+					<h4><span class="glyphicon glyphicon-user"></span>&nbsp;用户登录&nbsp;<small>Login</small></h4>
+				</div>		
+				<div class="panel-body">
+				<div id="alert-area">
+{if condition="isset($alert)"}
+					<div class="alert alert-warning alert-dismissible" role="alert">
+					  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					  <strong>{$alert}</strong>
+					</div>
+{/if}
+				</div>
+					<form class="form-horizontal" role="form" action="{:url('index/index/verify')}">
+					  <div class="form-group has-feedback">
+					    <label for="inputUser" class="col-sm-3 control-label">用户名</label>
+					    <div class="col-md-8 col-sm-7">
+					      <input name="user" type="text" class="form-control" id="inputUser" placeholder="Username">
+					    </div>
+					  </div>
+					  <div class="form-group has-feedback">
+					    <label for="inputPassword" class="col-sm-3 control-label">密码</label>
+					    <div class="col-md-8 col-sm-7">
+					      <input name="password" type="password" class="form-control" id="inputPassword" placeholder="Password">
+					    </div>
+					  </div>
+					  <div class="form-group has-feedback">
+					    <label for="inputCaptcha" class="col-sm-3 col-xs-12 control-label">验证码</label>
+					    <div class="col-md-5 col-sm-4 col-xs-6">
+					      <input name="captcha" type="text" class="form-control" id="inputCaptcha" placeholder="Captcha" maxlength="4">
+					    </div>
+						  <div class="col-md-3 col-sm-3 col-xs-5">
+						  	<img src="{:captcha_src()}" alt="code" class="img-captcha" />
+						  </div>
+					  </div>
+					  <div class="form-group">
+					    <div class="col-sm-offset-3 col-sm-8">
+					      <button type="button" style="width: 100%;" class="btn btn-info" id="btn-login">登录</button>
+					    </div>
+					  </div>
+					</form>
+               </div>
+           </div>
+			</div>
+		</div>
+   </div>
+   <!-- /.container -->
+{include file="public/footer" /}
+<script>
+$(document).ready(function() {
+	
+	function showErrorAlert(title, content) {
+		$("#alert-area").html('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><strong>' + title + '</strong>' + content + '</div>');
+	}
+	function setWaiting(btn, wat) {
+		$(btn).addClass('disabled');
+		$(btn).text(wat);
+	}
+	function setReset(btn, ret) {
+		$(btn).removeClass('disabled');
+		$(btn).text(ret);
+	}
+	$("#btn-login").click(function() {
+		var nec = $(this).parents("form").find(".has-feedback");
+		var isok = true;
+		nec.each(function() {
+			var ipt = $(this).find("input,select");
+			if(ipt.val() == null || ipt.val() == '') {
+				ipt.after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>');
+				$(this).addClass("has-error");
+				if(isok) {
+					ipt.focus();
+				}
+				isok = false;
+			}
+		});
+		if(isok) {
+			var fields = $(this).parents("form").find("[name]");
+			var _url = $(this).parents("form").attr('action');
+			var _data = "";
+			var btn = $(this);
+			fields.each(function() {
+				if(_data != "") {
+					_data = _data + "&"
+				}
+				_data = _data + $(this).attr("name").trim() + "=" + $(this).val().trim();
+			});
+			setWaiting($(this), '正在登录…');
+			$.ajax({
+				url: _url,
+				type: "POST",
+				data: _data,
+				success: function(data) {
+					if(data.success) {
+						setReset(btn, '登录');
+						// login success
+						window.location.href = data.url;
+					} else {
+						setReset(btn, '登录');
+						showErrorAlert('登录失败！', data.msg);
+						$("#inputCaptcha").parent().next().find("img").click();
+						$("input[name='captcha']").val('');
+						if(data.code != -123) {						
+							$("input[name='password']").val('').focus();
+						}
+					}
+				},
+				error: function() {
+					setReset(btn, '登录');
+					showErrorAlert('网络错误！', '请检查网络连接');
+					$("#inputCaptcha").parent().next().find("img").click();
+					$("input[name='captcha']").val('');
+				}
+			});
+		}
+	});
+	$("input[name='user']").keypress(function(event) {
+		var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	    	$("input[name='password']").focus();  
+	    }
+	});
+	
+	$("input[name='password']").keypress(function(event) {
+		var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	    	$("input[name='captcha']").focus();
+	    }
+	});
+	
+	$("input[name='captcha']").keypress(function() {
+		var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	    	$("#btn-login").click();
+	    }
+	});
+	
+	$("#inputCaptcha").parent().next().find("img").click(function() {
+		var url = $(this).attr('src');
+		$(this).attr('src', url);
+	});
+});
+</script>
+</body>
+
+</html>

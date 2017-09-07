@@ -1,18 +1,52 @@
 <style>
 .table-sys {
-	margin-top: 10px;
+	margin-top: 30px;
 	margin-bottom: 30px;
 }
 </style>
-<table class="table table-hover table-bordered table-sys">
+<table class="table table-hover table-bordered" style="margin-bottom: 0px; margin-top: 10px;">
 	<tbody>
 	<tr><td colspan="2"><strong>按钮状态</strong></td></tr>
 	<tr>
-		<td><button style="width: 100%;" type="button" class="btn btn-success{:isset($button)?' disabled':''}" id="btn-login">{:isset($button)?$button['content']:'查询'}</button></td>
-		<td></td>
+		<td><button style="width: 100%;" type="button" class="btn btn-{$button['color']} {:empty($button['enable'])?'disabled':''}" id="btn-{$button['model']}">{:empty($button['enable'])?$button['dis_text']:$button['text']}</button></td>
+		<td style="width: 110px;">
+			<button class="btn btn-default btn-edit" title="编辑按钮" data-model="{$button['model']}"><span class="glyphicon glyphicon-edit"></span></button>
+			<button class="btn btn-primary btn-save" title="保存更改" data-model="{$button['model']}" style="display: none;"><span class="glyphicon glyphicon-save"></span></button>
+			<button class="btn btn-danger btn-cancel" title="放弃更改" data-model="{$button['model']}" style="display: none;"><span class="glyphicon glyphicon-remove"></span></button>
+		</td>
 	</tr>
 	</tbody>
 </table>
+<div class="collapse well" id="btn-collapse-{$button['model']}">
+	<form class="btn-edit-form" data-button="#btn-{$button['model']}">
+  <div class="form-group">
+    <label for="btn-text-{$button['model']}">正常文本</label>
+    <input data-orig="{$button['text']}" type="text" class="form-control btn-text" id="btn-text-{$button['model']}" placeholder="正常状态下按钮文本" value="{$button['text']}">
+  </div>
+  <div class="form-group">
+    <label for="btn-dis-text-{$button['model']}">禁用状态文本</label>
+    <input data-orig="{$button['dis_text']}" type="text" class="form-control btn-dis-text" id="btn-dis-text-{$button['model']}" placeholder="禁用状态下按钮文本" value="{$button['dis_text']}">
+  </div>
+  <div class="form-group">
+    <label for="btn-color-{$button['model']}">按钮情境类</label>
+      <select data-orig="{$button['color']}" class="form-control btn-color" name="color" id="btn-color-{$button['model']}">
+        <option value="default" title="默认样式"{$button['color']=='default'?' selected':''}>Default（默认样式）</option>
+        <option value="primary" title="首选项（深蓝）"{$button['color']=='primary'?' selected':''}>Primary（首选项，深蓝）</option>
+        <option value="success" title="成功（绿）"{$button['color']=='success'?' selected':''}>Success（成功，绿）</option>
+        <option value="info" title="一般信息（浅蓝）"{$button['color']=='info'?' selected':''}>Info（一般信息，浅蓝）</option>
+        <option value="warning" title="警告（橙）"{$button['color']=='warning'?' selected':''}>Warning（警告，橙）</option>
+        <option value="danger" title="危险（红）"{$button['color']=='danger'?' selected':''}>Danger（危险，红）</option>
+      </select>
+  </div>
+  <div class="form-group">
+    <label for="btn-enable-{$button['model']}">按钮状态</label>
+      <select data-orig="{$button['enable']}" class="form-control btn-enable" name="enable" id="btn-enable-{$button['model']}">
+        <option value="1" title="按钮可正常点击"{:empty($button['enable'])?'':' selected'}>启用（正常）</option>
+        <option value="0" title="按钮为禁用状态，不可使用"{:empty($button['enable'])?' selected':''}>禁用（维护）</option>
+      </select>
+  </div>
+</form>
+</div>
 <table class="table table-hover table-bordered table-sys" style="margin-bottom: 0px;">
 	<tbody>
 	<tr><td colspan="2"><strong>通知列表</strong></td></tr>
@@ -35,7 +69,122 @@
 	</tbody>
 </table>
 <script>
+var _html_btn;
 $(".close>span[aria-hidden='true']").click(function() {
 	return false;
+});
+$(".btn-edit").click(function() {
+	var _model = $(this).attr("data-model");
+	_html_btn = $("#btn-" + _model).clone();
+	_html_collapse_btn = $("#btn-collapse-" + _model).clone();
+	$(this).css('display', 'none');
+	$(this).parent().children(".btn-save").css('display', 'inline-block');
+	$(this).parent().children(".btn-cancel").css('display', 'inline-block');
+	$("#btn-collapse-" + _model).collapse('show');
+});
+$(".btn-save").click(function() {
+	var _model = $(this).attr("data-model");
+	var _this = $(this);
+	
+	var _text = $("#btn-text-" + _model).val();
+	var _dis_text = $("#btn-dis-text-" + _model).val();
+	var _color = $("#btn-color-" + _model).val();
+	var _enable = $("#btn-enable-" + _model).val();
+	
+	var _data = "model=" + _model + "&text=" + _text + "&dis_text=" + _dis_text + "&color=" + _color + "&enable=" + _enable;
+	$.ajax({
+		type: "post",
+		url: "{:url('index/system/button')}",
+		data: _data,
+		success: function(data) {
+			if(data.success) {
+				$(".form-control[data-orig]").each(function() {
+					$(this).attr("data-orig", $(this).val());
+				});
+				$(_this).css('display', 'none');
+				$(_this).parent().children(".btn-cancel").css('display', 'none');
+				$(_this).parent().children(".btn-edit").css('display', 'inline-block');
+				$("#btn-collapse-" + _model).collapse('hide');
+			} else {
+				$.alert({
+					keyboardEnabled: true,
+					backgroundDismiss: true,
+					icon: 'glyphicon glyphicon-remove-circle',
+					title: "发生错误",
+					content: "发生错误，修改失败！<br/>错误信息：" + data.msg,
+					type: 'red',
+					buttons: {
+						确定: {
+							btnClass: 'btn btn-danger',
+						},
+					},
+				});
+			}
+		},
+		error: function() {
+			$.alert({
+				keyboardEnabled: true,
+				backgroundDismiss: true,
+				icon: 'glyphicon glyphicon-remove-circle',
+				title: "发生错误",
+				content: "发生未知错误，修改失败！",
+				type: 'red',
+				buttons: {
+					确定: {
+						btnClass: 'btn btn-danger',
+					},
+				},
+			});
+		}
+	});
+});
+$(".btn-cancel").click(function() {
+	var _model = $(this).attr("data-model");
+	$(this).css('display', 'none');
+	$(this).parent().children(".btn-save").css('display', 'none');
+	$(this).parent().children(".btn-edit").css('display', 'inline-block');
+	$("#btn-collapse-" + _model).collapse('hide');
+	$("#btn-" + _model).replaceWith(_html_btn);
+	
+	$(".form-control[data-orig]").each(function() {
+		$(this).val($(this).attr("data-orig"));
+	});
+});
+
+$(".btn-edit-form input.btn-text").on('input', function() {
+	var _btn = $(this).parents("form").attr("data-button");
+	var _val = $(this).val();
+	var _enable = $(this).parents("form").find("select.btn-enable").val();
+	if(_enable == "1") { // enabled
+		$(_btn).text(_val);
+	}
+});
+$(".btn-edit-form input.btn-dis-text").on('input', function() {
+	var _btn = $(this).parents("form").attr("data-button");
+	var _val = $(this).val();
+	var _enable = $(this).parents("form").find("select.btn-enable").val();
+	if(_enable == "0") { // disabled
+		$(_btn).text(_val);
+	}
+});
+$(".btn-edit-form select.btn-color").change(function() {
+	var _btn = $(this).parents("form").attr("data-button");
+	var _val = $(this).val();
+	$(_btn).removeClass("btn-default").removeClass("btn-primary").removeClass("btn-success")
+			.removeClass("btn-info").removeClass("btn-warning").removeClass("btn-danger");
+	$(_btn).addClass("btn-" + _val);
+});
+$(".btn-edit-form select.btn-enable").change(function() {
+	var _btn = $(this).parents("form").attr("data-button");
+	var _val = $(this).val();
+	if(_val == "1") { // enabled
+		$(_btn).removeClass("disabled");
+		var _text = $(this).parents("form").find("input.btn-text").val();
+		$(_btn).text(_text);
+	} else {
+		$(_btn).addClass("disabled");
+		var _dis_text = $(this).parents("form").find("input.btn-dis-text").val();
+		$(_btn).text(_dis_text);
+	}
 });
 </script>

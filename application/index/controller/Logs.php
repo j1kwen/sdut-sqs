@@ -4,16 +4,12 @@ namespace app\index\controller;
 use think\Controller;
 use think\Request;
 
-class Logs extends BaseController {
+class Logs extends BaseAuthController {
 	
 	public function index() {
 		$request = Request::instance();
 		
 		$_auth = $request->param('auth', '');
-		
-		if($_auth != '19980604') {
-			$this->error('tan 90°');
-		}
 		
 		$this->assign([
 				'title' => '日志查看',

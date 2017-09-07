@@ -3,6 +3,8 @@ namespace app\index\controller;
 
 use think\Controller;
 use think\Request;
+use think\Session;
+use app\index\model\Auth;
 
 class Index extends BaseController {
 	
@@ -26,6 +28,58 @@ class Index extends BaseController {
     			],
     	]);
     	return $this->fetch();
+    }
+    
+    public function login() {
+    	
+    	if (!Auth::login()) {
+    		if(Session::has('redir') && Session::get('redir')) {
+    			$_alert = '请先登录！';
+    			Session::delete('redir');
+    		}
+    		$this->assign([
+    				'title' => '后台用户登录 - SDUT SQS',
+    				'alert' => isset($_alert) ? $_alert : null,
+    		]);
+    		return $this->fetch();
+    	} else {
+    		$_url = 'index/index/index';
+    		$this->redirect($_url);
+    	}
+    }
+    
+    public function verify(Request $request) {
+    	if($request->isAjax()) {
+    		$_user = $request->param('user');
+    		$_pwd = $request->param('password');
+    		$_code = $request->param('captcha');
+    		if (!empty($_user) && !empty($_pwd) && !empty($_code)) {
+    			if(!captcha_check($_code)) {
+    				// code error
+    				return getAjaxResp("验证码错误！", false, -123);
+    			}
+    			$auth = new Auth();
+    			if($auth->authUser($_user, $_pwd, $request->ip(0, true))) {
+    				Auth::login($_user, $auth->getName($_user));
+    				$_url = 'index/system/index';
+    				if(Session::has('redir_url')) {
+    					$_url = Session::get('redir_url');
+    					Session::delete('redir_url');
+    				}
+    				return json([
+    						'success' => true,
+    						'url' => url($_url),
+    						'msg' => 'success',
+    				]);
+    			} else {
+    				return getAjaxResp("用户名或密码错误!");
+    			}
+    		} else {
+    			return getAjaxResp("请输入完整信息!", false);
+    		}
+    	} else {
+    		$this->error();
+    	}
     }
     
     public function test() {
