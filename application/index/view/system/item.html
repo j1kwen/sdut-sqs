@@ -3,6 +3,12 @@
 	margin-top: 30px;
 	margin-bottom: 30px;
 }
+.table-alert>tbody>tr>td.left {
+	text-align: left;
+}
+.tr-collapse>td {
+	padding: 8px 0px;
+}
 </style>
 <table class="table table-hover table-bordered" style="margin-bottom: 0px; margin-top: 10px;">
 	<tbody>
@@ -47,40 +53,78 @@
   </div>
 </form>
 </div>
-<table class="table table-hover table-bordered table-sys" style="margin-bottom: 0px;">
+<table class="table table-hover table-bordered table-sys table-alert" style="margin-bottom: 0px;">
 	<tbody>
 	<tr><td colspan="2"><strong>通知列表</strong></td></tr>
-	{foreach $alert as $atm}
+	{foreach name="alert" item="atm" key="key"}
 		<tr>
-			<td>
-			<div class="alert alert-{$atm['color']|default='success'}{$atm['close']==0?'':' alert-dismissible'}" role="alert" style="margin: 0px;">
-			{if condition="$atm['close'] eq 1"}
-			  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			{/if}
-			{if condition="!empty($atm['icon'])"}
-			  <span class="{$atm['icon']}"></span>
-			{/if}
-			{$atm['content']}
+			<td class="left">
+			<div id="alert-{$atm['id']}" class="alert alert-{$atm['color']|default='success'}{$atm['close']==0?'':' alert-dismissible'}" role="alert" style="margin: 0px;">
+			<button type="button" class="close" data-dismiss="alert" style="display: {:empty($atm['close'])?'none':'block'};"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<span class="alert-icon {$atm['icon']}"></span>
+			<span class="alert-content">{$atm['content']}</span>
 			</div>
 			</td>
-			<td></td>
+			<td class="{:empty($atm['enable'])?'danger':'success'}" style="width: 110px;">
+				<button class="btn btn-default btn-alert-edit" title="编辑通知" data-target="{$atm['id']}"><span class="glyphicon glyphicon-edit"></span></button>
+				<button class="btn btn-primary btn-alert-save" title="保存更改" data-target="{$atm['id']}" style="display: none;"><span class="glyphicon glyphicon-save"></span></button>
+				<button class="btn btn-danger btn-alert-cancel" title="放弃更改" data-target="{$atm['id']}" style="display: none;"><span class="glyphicon glyphicon-remove"></span></button>
+			</td>
+		</tr>
+		<tr>
+		<td style="padding: 0px;" colspan="2" class="left">
+		<div style="margin-bottom: 5px;" class="collapse well" id="alert-collapse-{$atm['id']}">
+			<form class="alert-edit-form" data-alert="#alert-{$atm['id']}">
+			  <div class="form-group">
+			    <label for="alert-content-{$atm['id']}">通知内容</label>
+			    <input data-orig="{:htmlspecialchars($atm['content'])}" type="text" class="form-control alert-content" id="alert-content-{$atm['id']}" placeholder="通知的Html内容" value="{:htmlspecialchars($atm['content'])}">
+			  </div>
+			  <div class="form-group">
+			    <label for="alert-icon-{$atm['id']}">图标类</label>
+			    <input data-orig="{$atm['icon']}" type="text" class="form-control alert-icon" id="alert-icon-{$atm['id']}" placeholder="通知文字前的图标类" value="{$atm['icon']}">
+			  </div>
+			  <div class="form-group">
+			    <label for="alert-color-{$atm['id']}">通知情境类</label>
+			      <select data-orig="{$atm['color']}" class="form-control alert-color" name="color" id="alert-color-{$atm['id']}">
+			        <option value="success" title="成功（绿）"{$atm['color']=='success'?' selected':''}>Success（成功，绿）</option>
+			        <option value="info" title="一般信息（蓝）"{$atm['color']=='info'?' selected':''}>Info（一般信息，蓝）</option>
+			        <option value="warning" title="警告（橙）"{$atm['color']=='warning'?' selected':''}>Warning（警告，橙）</option>
+			        <option value="danger" title="危险（红）"{$atm['color']=='danger'?' selected':''}>Danger（危险，红）</option>
+			      </select>
+			  </div>
+			  <div class="form-group">
+			    <label for="alert-close-{$atm['id']}">关闭按钮</label>
+			      <select data-orig="{$atm['close']}" class="form-control alert-close" name="close" id="alert-close-{$atm['id']}">
+			        <option value="1" title="通知可以通过关闭按钮关闭"{:empty($atm['close'])?'':' selected'}>可关闭</option>
+			        <option value="0" title="不显示关闭按钮，不可关闭"{:empty($atm['close'])?' selected':''}>不可关闭</option>
+			      </select>
+			  </div>
+			  <div class="form-group">
+			    <label for="alert-enable-{$atm['id']}">通知状态</label>
+			      <select data-orig="{$atm['enable']}" class="form-control alert-enable" name="enable" id="alert-enable-{$atm['id']}">
+			        <option value="1" title="通知会显示在对应模块"{:empty($atm['enable'])?'':' selected'}>启用（推送）</option>
+			        <option value="0" title="通知不会显示在界面上"{:empty($atm['enable'])?' selected':''}>禁用（隐藏）</option>
+			      </select>
+			  </div>
+			</form>
+		</div>
+		</td>
 		</tr>
 	{/foreach}
 	</tbody>
 </table>
 <script>
-var _html_btn;
-$(".close>span[aria-hidden='true']").click(function() {
-	return false;
-});
-$(".btn-edit").click(function() {
-	var _model = $(this).attr("data-model");
-	_html_btn = $("#btn-" + _model).clone();
-	_html_collapse_btn = $("#btn-collapse-" + _model).clone();
+
+// 通知相关操作
+var _html_alert; // 这里需要修改
+
+$(".btn-alert-edit").click(function() {
+	var _target = $(this).attr("data-target");
+	_html_alert = $("#alert-" + _target).clone();
 	$(this).css('display', 'none');
-	$(this).parent().children(".btn-save").css('display', 'inline-block');
-	$(this).parent().children(".btn-cancel").css('display', 'inline-block');
-	$("#btn-collapse-" + _model).collapse('show');
+	$(this).parent().children(".btn-alert-save").css('display', 'inline-block');
+	$(this).parent().children(".btn-alert-cancel").css('display', 'inline-block');
+	$("#alert-collapse-" + _target).collapse('show');
 });
 $(".btn-save").click(function() {
 	var _model = $(this).attr("data-model");
@@ -138,6 +182,122 @@ $(".btn-save").click(function() {
 		}
 	});
 });
+$(".btn-alert-cancel").click(function() {
+	var _target = $(this).attr("data-target");
+	$(this).css('display', 'none');
+	$(this).parent().children(".btn-alert-save").css('display', 'none');
+	$(this).parent().children(".btn-alert-edit").css('display', 'inline-block');
+	$("#alert-collapse-" + _target).collapse('hide');
+	$("#alert-" + _target).replaceWith(_html_alert);
+	
+	$("#alert-collapse-" + _target + " .form-control[data-orig]").each(function() {
+		$(this).val($(this).attr("data-orig"));
+	});
+});
+$(".alert-edit-form input.alert-content").on('input', function() {
+	var _alert = $(this).parents("form").attr("data-alert");
+	var _val = $(this).val();
+	$(_alert + " .alert-content").html(_val);
+});
+$(".alert-edit-form input.alert-icon").on('input', function() {
+	var _alert = $(this).parents("form").attr("data-alert");
+	var _val = $(this).val();
+	var _icon = $(_alert + " .alert-icon")
+	$(_icon).removeClass();
+	$(_icon).addClass("alert-icon").addClass(_val);
+});
+$(".alert-edit-form select.alert-color").change(function() {
+	var _alert= $(this).parents("form").attr("data-alert");
+	var _val = $(this).val();
+	$(_alert).removeClass("alert-success")
+			.removeClass("alert-info").removeClass("alert-warning").removeClass("alert-danger");
+	$(_alert).addClass("alert-" + _val);
+});
+$(".alert-edit-form select.alert-close").change(function() {
+	var _alert= $(this).parents("form").attr("data-alert");
+	var _val = $(this).val();
+	$(_alert + " button.close").css('display', _val == 1 ? 'block' : 'none');
+});
+$(".alert-edit-form select.alert-enable").change(function() {
+	var _alert = $(this).parents("form").attr("data-alert");
+	var _val = $(this).val();
+	if(_val == "1") { // enabled
+		$(_alert).parent().next().removeClass("danger").addClass("success");
+	} else {
+		$(_alert).parent().next().removeClass("success").addClass("danger");
+	}
+});
+
+
+// 按钮相关操作
+var _html_btn;
+$(".close>span[aria-hidden='true']").click(function() {
+	return false;
+});
+$(".btn-edit").click(function() {
+	var _model = $(this).attr("data-model");
+	_html_btn = $("#btn-" + _model).clone();
+	$(this).css('display', 'none');
+	$(this).parent().children(".btn-save").css('display', 'inline-block');
+	$(this).parent().children(".btn-cancel").css('display', 'inline-block');
+	$("#btn-collapse-" + _model).collapse('show');
+});
+$(".btn-save").click(function() {
+	var _model = $(this).attr("data-model");
+	var _this = $(this);
+	
+	var _text = $("#btn-text-" + _model).val();
+	var _dis_text = $("#btn-dis-text-" + _model).val();
+	var _color = $("#btn-color-" + _model).val();
+	var _enable = $("#btn-enable-" + _model).val();
+	
+	var _data = "model=" + _model + "&text=" + _text + "&dis_text=" + _dis_text + "&color=" + _color + "&enable=" + _enable;
+	$.ajax({
+		type: "post",
+		url: "{:url('index/system/button')}",
+		data: _data,
+		success: function(data) {
+			if(data.success) {
+				$(".btn-edit-form .form-control[data-orig]").each(function() {
+					$(this).attr("data-orig", $(this).val());
+				});
+				$(_this).css('display', 'none');
+				$(_this).parent().children(".btn-cancel").css('display', 'none');
+				$(_this).parent().children(".btn-edit").css('display', 'inline-block');
+				$("#btn-collapse-" + _model).collapse('hide');
+			} else {
+				$.alert({
+					keyboardEnabled: true,
+					backgroundDismiss: true,
+					icon: 'glyphicon glyphicon-remove-circle',
+					title: "发生错误",
+					content: "发生错误，修改失败！<br/>错误信息：" + data.msg,
+					type: 'red',
+					buttons: {
+						确定: {
+							btnClass: 'btn btn-danger',
+						},
+					},
+				});
+			}
+		},
+		error: function() {
+			$.alert({
+				keyboardEnabled: true,
+				backgroundDismiss: true,
+				icon: 'glyphicon glyphicon-remove-circle',
+				title: "发生错误",
+				content: "发生未知错误，修改失败！",
+				type: 'red',
+				buttons: {
+					确定: {
+						btnClass: 'btn btn-danger',
+					},
+				},
+			});
+		}
+	});
+});
 $(".btn-cancel").click(function() {
 	var _model = $(this).attr("data-model");
 	$(this).css('display', 'none');
@@ -146,7 +306,7 @@ $(".btn-cancel").click(function() {
 	$("#btn-collapse-" + _model).collapse('hide');
 	$("#btn-" + _model).replaceWith(_html_btn);
 	
-	$(".form-control[data-orig]").each(function() {
+	$(".btn-edit-form .form-control[data-orig]").each(function() {
 		$(this).val($(this).attr("data-orig"));
 	});
 });
