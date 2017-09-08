@@ -29,13 +29,4 @@ class Alert extends Model {
 			throw $e;
 		}
 	}
-	
-	public function getModel() {
-		try {
-			$sql = "select distinct model from ".$this->table;
-			return $this->query($sql);
-		} catch (\think\Exception $e) {
-			throw $e;
-		}
-	}
 }

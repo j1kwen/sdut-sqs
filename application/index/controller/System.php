@@ -16,8 +16,8 @@ class System extends BaseAuthController {
 		
 		$logs->log($_ip, 0, 'system', $_url, '/system');
 		
-		$m_alert = model('alert');
-		$models = $m_alert->getModel();
+		$m_button = model('button');
+		$models = $m_button->getModel();
 		
 		$this->assign([
 				'models' => $models,
