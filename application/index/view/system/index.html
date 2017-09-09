@@ -5,7 +5,7 @@
    <div class="container">
   	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
 	  <h1>后台管理 
-	  	<small>System
+	  	<small>System <a title="查看日志" href="{:url('index/logs/index')}"><span style="top:3px;" class="glyphicon glyphicon-time"></span></a>
 		</small>
 	  </h1>
 	</div>
@@ -14,8 +14,9 @@
            		<!-- Nav tabs -->
 	  <ul class="nav nav-tabs" role="tablist">
 	  {foreach name="models" item="item" key="key"}
-	    <li role="presentation" class="{:empty($key)?'active':''}"><a href="#sys-{$item['model']}" aria-controls="sys-{$item['model']}" role="tab" data-toggle="tab" data-model="{$item['model']}">{:ucfirst($item['model'])}</a></li>
+	    <li role="presentation" class="{:empty($key)?'active':''}"><a href="#sys-{$item['model']}" aria-controls="sys-{$item['model']}" role="tab" data-toggle="tab" data-model="{$item['model']}" title="{$item['model_name']}">{:ucfirst($item['model'])}</a></li>
       {/foreach}
+      	<li role="presentation"><a data-toggle="modal" data-target="#modal-add-model" id="sys-add-model" role="tab" data-toggle="tab" title="添加新模块"><span class="glyphicon glyphicon-plus"></span></a></li>
 	  </ul>
 	
 	  <!-- Tab panes -->
@@ -28,11 +29,170 @@
 	  </div>
        </div>
 	</div>
+	
+	
+	<!-- Modal -->
+<div class="modal fade" id="modal-add-model" tabindex="-1" role="dialog" aria-labelledby="modal-add-model-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-add-model-label">添加新模块</h4>
+      </div>
+      <div class="modal-body">
+		<form>
+		<div class="form-group">
+		  <label for="add-model-model">模块标识</label>
+		  <input type="text" class="form-control btn-text" id="add-model-model" placeholder="模块标识（唯一）" value="">
+		</div>
+		<div class="form-group">
+		  <label for="add-model-name">模块名</label>
+		  <input type="text" class="form-control btn-text" id="add-model-name" placeholder="模块的名称" value="">
+		</div>
+      	<hr/>
+        <strong>按钮预览：</strong>
+        <button style="width: 100%; margin-top: 5px;" type="button" class="btn btn-default" id="btn-add-model-example">查询</button>
+		<hr/>
+	  <div class="form-group">
+	    <label for="add-model-btn-text">正常文本</label>
+	    <input type="text" class="form-control btn-text" id="add-model-btn-text" placeholder="正常状态下按钮文本" value="查询">
+	  </div>
+	  <div class="form-group">
+	    <label for="add-model-btn-dis-text">禁用状态文本</label>
+	    <input type="text" class="form-control btn-dis-text" id="add-model-btn-dis-text" placeholder="禁用状态下按钮文本" value="维护中……">
+	  </div>
+	  <div class="form-group">
+	    <label for="add-model-btn-color">按钮情境类</label>
+	      <select class="form-control btn-color" name="color" id="add-model-btn-color">
+	        <option value="default" title="默认样式" selected>Default（默认样式）</option>
+	        <option value="primary" title="首选项（深蓝）">Primary（首选项，深蓝）</option>
+	        <option value="success" title="成功（绿）">Success（成功，绿）</option>
+	        <option value="info" title="一般信息（浅蓝）">Info（一般信息，浅蓝）</option>
+	        <option value="warning" title="警告（橙）">Warning（警告，橙）</option>
+	        <option value="danger" title="危险（红）">Danger（危险，红）</option>
+	      </select>
+	  </div>
+	  <div class="form-group">
+	    <label for="add-model-btn-enable">按钮状态</label>
+	      <select class="form-control btn-enable" name="enable" id="add-model-btn-enable">
+	        <option value="1" title="按钮可正常点击" selected>启用（正常）</option>
+	        <option value="0" title="按钮为禁用状态，不可使用">禁用（维护）</option>
+	      </select>
+	  </div>
+	</form>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="sys-add-model-submit">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
    </div>
    <!-- /.container -->
 {include file="public/footer" /}
 <script>
 $(document).ready(function() {
+	$("#add-model-btn-text").on('input', function() {
+		var _val = $(this).val();
+		var _enable = $("#add-model-btn-enable").val();
+		if(_enable == "1") { // enabled
+			$("#btn-add-model-example").text(_val);
+		}
+	});
+	$("#add-model-btn-dis-text").on('input', function() {
+		var _val = $(this).val();
+		var _enable = $("#add-model-btn-enable").val();
+		if(_enable == "0") { // disabled
+			$("#btn-add-model-example").text(_val);
+		}
+	});
+	$("#add-model-btn-color").change(function() {
+		var _val = $(this).val();
+		$("#btn-add-model-example").removeClass("btn-default").removeClass("btn-primary").removeClass("btn-success")
+				.removeClass("btn-info").removeClass("btn-warning").removeClass("btn-danger");
+		$("#btn-add-model-example").addClass("btn-" + _val);
+	});
+	$("#add-model-btn-enable").change(function() {
+		var _val = $(this).val();
+		if(_val == "1") { // enabled
+			$("#btn-add-model-example").removeClass("disabled");
+			var _text = $("#add-model-btn-text").val();
+			$("#btn-add-model-example").text(_text);
+		} else {
+			$("#btn-add-model-example").addClass("disabled");
+			var _dis_text = $("#add-model-btn-dis-text").val();
+			$("#btn-add-model-example").text(_dis_text);
+		}
+	});
+	$("#sys-add-model-submit").click(function() {
+		var _url = "{:url('index/system/model')}";
+		
+		var _model = $("#add-model-model").val();
+		var _name = $("#add-model-name").val();
+		
+		var _text = $("#add-model-btn-text").val();
+		var _dis_text = $("#add-model-btn-dis-text").val();
+		var _color = $("#add-model-btn-color").val();
+		var _enable = $("#add-model-btn-enable").val();
+		
+		var _data = "model=" + _model + "&name=" + _name + "&text=" + _text + "&dis_text=" + _dis_text + "&color=" + _color + "&enable=" + _enable;
+		$.ajax({
+			url: _url,
+			data: _data,
+			type: "post",
+			success: function(resp) {
+				if(resp.success) {
+					$.alert({
+						keyboardEnabled: true,
+						backgroundDismiss: true,
+						icon: 'glyphicon glyphicon-ok',
+						title: "成功",
+						content: "模块" + _name + "[" + _model + "]添加成功。",
+						type: 'green',
+						buttons: {
+							确定: {
+								btnClass: 'btn btn-success',
+								action: function() {
+									location.reload();
+								}
+							},
+						},
+					});					
+				} else {
+					$.alert({
+						keyboardEnabled: true,
+						backgroundDismiss: true,
+						icon: 'glyphicon glyphicon-remove-circle',
+						title: "发生错误",
+						content: resp.msg,
+						type: 'red',
+						buttons: {
+							确定: {
+								btnClass: 'btn btn-danger',
+							},
+						},
+					});
+				}
+			}, 
+			error: function() {
+				$.alert({
+					keyboardEnabled: true,
+					backgroundDismiss: true,
+					icon: 'glyphicon glyphicon-remove-circle',
+					title: "发生错误",
+					content: "发生未知错误，模块添加失败！",
+					type: 'red',
+					buttons: {
+						确定: {
+							btnClass: 'btn btn-danger',
+						},
+					},
+				});
+			}
+		});
+	});
 	$("a[data-toggle='tab']").click(function() {
 		var cls_name = $(this).attr('href');
 		var _url = "{:url('index/system/item')}";
@@ -42,7 +202,7 @@ $(document).ready(function() {
 		$.ajax({
 			url: _url,
 			data: _data,
-			method: "get",
+			type: "get",
 			success: function(resp) {
 				$(cls_name).html(resp);
 			}, 

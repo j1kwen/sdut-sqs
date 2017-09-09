@@ -26,6 +26,11 @@ class Index extends BaseController {
     					'icon' => 'glyphicon glyphicon-envelope',
     					'target' => '_self',
     			],
+    			'footer_extern_link2' => [
+    					'href' => url('index/system/index'),
+    					'icon' => 'glyphicon glyphicon-cog',
+    					'title' => '后台管理',
+    			],
     	]);
     	return $this->fetch();
     }

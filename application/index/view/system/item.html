@@ -55,7 +55,7 @@
 </div>
 <table class="table table-hover table-bordered table-sys table-alert" style="margin-bottom: 0px;">
 	<tbody>
-	<tr><td colspan="2"><strong>通知列表</strong></td></tr>
+	<tr><td colspan="2"><strong>通知列表&nbsp;</strong><button title="添加新通知" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-plus"></span></button></td></tr>
 	{foreach name="alert" item="atm" key="key"}
 		<tr>
 			<td class="left">
@@ -116,39 +116,40 @@
 <script>
 
 // 通知相关操作
-var _html_alert; // 这里需要修改
+//var _html_alert = []; // 这里需要修改
 
 $(".btn-alert-edit").click(function() {
 	var _target = $(this).attr("data-target");
-	_html_alert = $("#alert-" + _target).clone();
+	//_html_alert["#alert-" + _target] = $("#alert-" + _target).clone();
 	$(this).css('display', 'none');
 	$(this).parent().children(".btn-alert-save").css('display', 'inline-block');
 	$(this).parent().children(".btn-alert-cancel").css('display', 'inline-block');
 	$("#alert-collapse-" + _target).collapse('show');
 });
-$(".btn-save").click(function() {
-	var _model = $(this).attr("data-model");
+$(".btn-alert-save").click(function() {
+	var _target = $(this).attr("data-target");
 	var _this = $(this);
 	
-	var _text = $("#btn-text-" + _model).val();
-	var _dis_text = $("#btn-dis-text-" + _model).val();
-	var _color = $("#btn-color-" + _model).val();
-	var _enable = $("#btn-enable-" + _model).val();
+	var _content = $("#alert-content-" + _target).val();
+	var _icon = $("#alert-icon-" + _target).val();
+	var _color = $("#alert-color-" + _target).val();
+	var _close = $("#alert-close-" + _target).val();
+	var _enable = $("#alert-enable-" + _target).val();
 	
-	var _data = "model=" + _model + "&text=" + _text + "&dis_text=" + _dis_text + "&color=" + _color + "&enable=" + _enable;
+	var _data = "id=" + _target + "&content=" + _content + "&icon=" + _icon + "&color=" + _color+ "&close=" + _close + "&enable=" + _enable;
 	$.ajax({
 		type: "post",
-		url: "{:url('index/system/button')}",
+		url: "{:url('index/system/alert')}",
 		data: _data,
 		success: function(data) {
 			if(data.success) {
-				$(".form-control[data-orig]").each(function() {
+				$("#alert-collapse-" + _target + " .form-control[data-orig]").each(function() {
 					$(this).attr("data-orig", $(this).val());
 				});
 				$(_this).css('display', 'none');
-				$(_this).parent().children(".btn-cancel").css('display', 'none');
-				$(_this).parent().children(".btn-edit").css('display', 'inline-block');
-				$("#btn-collapse-" + _model).collapse('hide');
+				$(_this).parent().children(".btn-alert-cancel").css('display', 'none');
+				$(_this).parent().children(".btn-alert-edit").css('display', 'inline-block');
+				$("#alert-collapse-" + _target).collapse('hide');
 			} else {
 				$.alert({
 					keyboardEnabled: true,
@@ -188,10 +189,12 @@ $(".btn-alert-cancel").click(function() {
 	$(this).parent().children(".btn-alert-save").css('display', 'none');
 	$(this).parent().children(".btn-alert-edit").css('display', 'inline-block');
 	$("#alert-collapse-" + _target).collapse('hide');
-	$("#alert-" + _target).replaceWith(_html_alert);
+	//$("#alert-" + _target).replaceWith(_html_alert["#alert-" + _target]);
 	
 	$("#alert-collapse-" + _target + " .form-control[data-orig]").each(function() {
 		$(this).val($(this).attr("data-orig"));
+		$(this).change();
+		$(this).trigger('input');
 	});
 });
 $(".alert-edit-form input.alert-content").on('input', function() {
@@ -230,13 +233,13 @@ $(".alert-edit-form select.alert-enable").change(function() {
 
 
 // 按钮相关操作
-var _html_btn;
+//var _html_btn;
 $(".close>span[aria-hidden='true']").click(function() {
 	return false;
 });
 $(".btn-edit").click(function() {
 	var _model = $(this).attr("data-model");
-	_html_btn = $("#btn-" + _model).clone();
+	//_html_btn = $("#btn-" + _model).clone();
 	$(this).css('display', 'none');
 	$(this).parent().children(".btn-save").css('display', 'inline-block');
 	$(this).parent().children(".btn-cancel").css('display', 'inline-block');
@@ -304,10 +307,12 @@ $(".btn-cancel").click(function() {
 	$(this).parent().children(".btn-save").css('display', 'none');
 	$(this).parent().children(".btn-edit").css('display', 'inline-block');
 	$("#btn-collapse-" + _model).collapse('hide');
-	$("#btn-" + _model).replaceWith(_html_btn);
+	//$("#btn-" + _model).replaceWith(_html_btn);
 	
 	$(".btn-edit-form .form-control[data-orig]").each(function() {
 		$(this).val($(this).attr("data-orig"));
+		$(this).change();
+		$(this).trigger('input');
 	});
 });
 

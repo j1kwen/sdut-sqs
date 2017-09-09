@@ -19,7 +19,9 @@
 	   <span style="top: 2px;" class="{$footer_extern_context['icon']|default='glyphicon glyphicon-question-sign'}"></span>
 	 </a>
 	  {/if}
-	  
+	  {if condition="isset($footer_extern_link2)"}
+	 <a href="{$footer_extern_link2['href']|default='javascript:void(0);'}" target="{$footer_extern_link2['target']|default='_blank'}" title="{$footer_extern_link2['title']|default=''}"><span class="{$footer_extern_link2['icon']|default='glyphicon glyphicon-link'}"></span></a>
+	 {/if}
    </div>
   </div>
 </footer>

@@ -29,4 +29,20 @@ class Alert extends Model {
 			throw $e;
 		}
 	}
+	
+	public function modifyAlert($id, $content, $icon, $color, $close, $enable) {
+		try {
+			return $this->update([
+					'content' => $content,
+					'icon' => $icon,
+					'color' => $color,
+					'close' => intval($close),
+					'enable' => intval($enable),
+			],[
+					'id' => $id,
+			]);
+		} catch (\think\Exception $e) {
+			throw $e;
+		}
+	}
 }

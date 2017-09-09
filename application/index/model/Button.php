@@ -41,9 +41,24 @@ class Button extends Model {
 		}
 	}
 	
+	public function addButton($model, $name, $text, $dis_text, $color, $enable) {
+		try {
+			$this->save([
+					'model' => $model,
+					'model_name' => $name,
+					'text' => $text,
+					'dis_text' => $dis_text,
+					'color' => $color,
+					'enable' => intval($enable),
+			]);
+		} catch (\think\Exception $e) {
+			throw $e;
+		}
+	}
+	
 	public function getModel() {
 		try {
-			$sql = "select distinct model from ".$this->table;
+			$sql = "select distinct model, model_name from ".$this->table;
 			return $this->query($sql);
 		} catch (\think\Exception $e) {
 			throw $e;

@@ -82,24 +82,67 @@ class System extends BaseAuthController {
 		}
 	}
 	
-	public function modify() {
+	public function alert() {
 		$request = Request::instance();
 		if($request->isAjax()) {
-			
 			$_id = $request->param('id','');
-			if(empty($_model)) {
-				$this->error();
+			$_content = $request->param('content','');
+			$_icon = $request->param('icon','');
+			$_color = $request->param('color','');
+			$_close = $request->param('close','');
+			$_enable = $request->param('enable','');
+			if(empty($_id) || empty($_color)) {
+				return json([
+						'success' => false,
+						'msg' => 'param error',
+				]);
 			}
-			$m_alert = model('alert');
-			$alert = $m_alert->getAlert($_model, 1);
-			$button = $m_alert->getButtonStatus($_model);
-				
-			$this->assign([
-					'alert' => $alert,
-					'button' => $button,
-					'model' => $_model,
-			]);
-			return $this->fetch();
+			try {
+				$m_alert = model('alert');
+				$m_alert->modifyAlert($_id, $_content, $_icon, $_color, $_close, $_enable);
+				return json([
+						'success' => true,
+						'msg' => 'success',
+				]);
+			} catch (\think\Exception $e) {
+				return json([
+						'success' => false,
+						'msg' => $e->getMessage(),
+				]);
+			}
+		} else {
+			$this->error();
+		}
+	}
+	
+	public function model() {
+	$request = Request::instance();
+		if($request->isAjax()) {
+			$_model = $request->param('model','');
+			$_name = $request->param('name','');
+			$_text = $request->param('text','');
+			$_dis_text = $request->param('dis_text','');
+			$_color = $request->param('color','');
+			$_enable = $request->param('enable','');
+			if(empty($_model) || empty($_text) || empty($_dis_text) || empty($_color)) {
+				return json([
+						'success' => false,
+						'msg' => 'param error',
+				]);
+			}
+			try {				
+				$m_button = model('button');
+				$m_button->addButton($_model, $_name, $_text, $_dis_text, $_color, $_enable);
+				return json([
+						'success' => true,
+						'msg' => 'success',
+				]);
+			} catch (\think\Exception $e) {
+				return json([
+						'success' => false,
+						'msg' => $e->getMessage(),
+				]);
+			}
 		} else {
 			$this->error();
 		}
