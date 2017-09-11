@@ -23,20 +23,36 @@
 {/foreach}
 </tbody>
 </table>
-<nav aria-label="Page navigation">
+<nav aria-label="Page navigation" class="nav-log-pager" data-type="{$type}" data-size="{$size}" data-page="{$page}">
   <ul class="pagination">
-    <li>
-      <a href="" aria-label="Previous">
+    <li class="{$page==1?'disabled':''}">
+      <a href="javascript:void(0);" aria-label="Previous" data-page="{$page==1?'1':$page-1}">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
-    <li class="active"><a href="javascript:void(0);">{$page}</a></li>
-    <li><a href="#">2</a></li>
-    <li><a href="#">3</a></li>
-    <li><a href="#">4</a></li>
-    <li><a href="#">5</a></li>
-    <li>
-      <a href="#" aria-label="Next">
+    {if condition="$page gt 3"}
+    <li class=""><a href="javascript:void(0);" data-page="1">1</a></li>
+    <li class="disabled"><a href="javascript:void(0);">...</a></li>
+    {/if}
+    <li class="active"><a href="javascript:void(0);" data-page="{$page<=3?'1':$page-2}">{$page<=3?'1':$page-2}</a></li>
+    {if condition="$pageCnt egt 2"}
+    <li class=""><a href="javascript:void(0);" data-page="{$page<=3?'2':$page-1}">{$page<=3?'2':$page-1}</a></li>
+    {/if}
+    {if condition="$pageCnt egt 3"}
+    <li class=""><a href="javascript:void(0);" data-page="{$page<=3?'3':$page}">{$page<=3?'3':$page}</a></li>
+    {/if}
+    {if condition="$pageCnt egt 4 AND $pageCnt gt $page"}
+    <li class=""><a href="javascript:void(0);" data-page="{$page<=3?'4':$page+1}">{$page<=3?'4':$page+1}</a></li>
+    {/if}
+    {if condition="$pageCnt egt 5 AND $pageCnt gt $page + 1"}
+    <li class=""><a href="javascript:void(0);" data-page="{$page<=3?'5':$page+2}">{$page<=3?'5':$page+2}</a></li>
+    {/if}
+    {if condition="$pageCnt gt $page+2"}
+    <li class="disabled"><a href="javascript:void(0);">...</a></li>
+    <li class=""><a href="javascript:void(0);" data-page="{$pageCnt}">{$pageCnt}</a></li>
+    {/if}
+    <li class="{$page==$pageCnt?'disabled':''}">
+      <a href="javascript:void(0);" aria-label="Next" data-page="{$page==$pageCnt?$page:$page+1}">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>
@@ -45,6 +61,35 @@
 {/if}
 <script>
 $(document).ready(function() {
+	$(".nav-log-pager>ul>li").each(function() {
+		$(this).removeClass("active");
+		if($(this).find("a").attr("data-page") == $(this).parents(".nav-log-pager").attr("data-page")) {
+			$(this).addClass("active");
+		}
+	});
+	
+	$(".nav-log-pager>ul>li>a").click(function() {
+		if($(this).parent().hasClass("disabled")) {
+			return false;
+		}
+		var _parent = $(this).parents(".tab-pane");
+		var _page = $(this).attr("data-page");
+		var _size = $(this).parents(".nav-log-pager").attr("data-size");
+		var _type = $(this).parents(".nav-log-pager").attr("data-type");
+		var _data = "page=" + _page + "&size=" + _size + "&type=" + _type;
+		$(_parent).html('<div class="loading-icon"></div>');
+		$.ajax({
+			url: "{:url('index/logs/item')}",
+			data: _data,
+			method: "POST",
+			success: function(resp) {
+				$(_parent).html(resp);
+			}, 
+			error: function() {
+				$(_parent).html('<div class="list-empty"><span class="glyphicon glyphicon-remove-circle"></span>&nbsp;发生错误</div>');
+			}
+		});
+	});
 
 	$("#badge-access").text("{$cnt[0]['val']}");
 	$("#badge-search-self").text("{$cnt[1]['val']}");

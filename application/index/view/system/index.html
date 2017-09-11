@@ -16,7 +16,7 @@
 	  {foreach name="models" item="item" key="key"}
 	    <li role="presentation" class="{:empty($key)?'active':''}"><a href="#sys-{$item['model']}" aria-controls="sys-{$item['model']}" role="tab" data-toggle="tab" data-model="{$item['model']}" title="{$item['model_name']}">{:ucfirst($item['model'])}</a></li>
       {/foreach}
-      	<li role="presentation"><a data-toggle="modal" data-target="#modal-add-model" id="sys-add-model" role="tab" data-toggle="tab" title="添加新模块"><span class="glyphicon glyphicon-plus"></span></a></li>
+      	<li role="presentation"><a href="#" data-toggle="modal" data-target="#modal-add-model" id="sys-add-model" role="tab" data-toggle="tab" title="添加新模块"><span class="glyphicon glyphicon-plus"></span></a></li>
 	  </ul>
 	
 	  <!-- Tab panes -->

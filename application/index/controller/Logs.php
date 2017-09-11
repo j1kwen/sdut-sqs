@@ -29,11 +29,21 @@ class Logs extends BaseAuthController {
 			$logs = model('logs');
 			$list = $logs->item($_type, $_page, $_size);
 			$listCnt = $logs->getCount();
+			$pageCnt = 1;
+			foreach($listCnt as $lc) {
+				if($lc['type'] == $_type) {
+					$pageCnt = $lc['val'];
+					$pageCnt = ceil($pageCnt / $_size);
+					break;
+				}
+			}
 			$this->assign([
 					'list' => $list,
 					'type' => $_type,
 					'cnt' => $listCnt,
+					'pageCnt' => $pageCnt,
 					'page' => $_page,
+					'size' => $_size,
 			]);
 			return $this->fetch();
 		} else {

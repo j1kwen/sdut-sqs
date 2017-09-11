@@ -23,8 +23,7 @@ class Logs extends Model {
 	
 	public function item($type, $page, $size) {
 		$start = ($page-1) * $size;
-		$end = $start + $size;
-		$sql = "SELECT * FROM logs WHERE type=".$type." ORDER BY id DESC LIMIT ".$start.",".$end;
+		$sql = "SELECT * FROM logs WHERE type=".$type." ORDER BY id DESC LIMIT ".$start.",".$size;
 		return $this->query($sql);
 	}
 	
@@ -32,4 +31,5 @@ class Logs extends Model {
 		$sql = "SELECT COUNT(id) AS val,type FROM logs GROUP BY type ORDER BY type";
 		return $this->query($sql);
 	}
+	
 }
