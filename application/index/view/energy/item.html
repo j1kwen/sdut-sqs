@@ -1,0 +1,38 @@
+{if condition="$code neq 0"}
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;
+  {$message}&nbsp;({$status})
+</div>
+{else /}
+
+<div class="panel panel-{:empty($data->blackout)?'info':'danger'}">
+	<div class="panel-heading">
+		<h4><span class="glyphicon glyphicon-flash"></span>&nbsp;电量使用情况 （{:empty($data->blackout)?'正常供电':'已断电'}）</h4>
+	</div>
+	<div class="panel-body">
+		{if condition="!empty($data->ilegalblackout)"}
+		<div class="alert alert-danger alert-dismissible" role="alert">
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <strong>{$data->roomname}</strong>由于使用违章电器而导致断电，请联系辅导员处理供电事宜！
+		</div>
+		{/if}
+		<table class="table table-hover table-bordered" style="margin-bottom: 0px;">
+			<tbody>
+				<tr class=""><td>房间</td><td><strong>{$data->roomname}</strong></td></tr>
+				<tr class=""><td>姓名</td><td>{$data->userName}</td></tr>
+				<tr class=""><td>余量</td><td><span class="label label-{$l_color}">{$data->lastreading} kW·h</span></td></tr>
+				<tr class=""><td>日均用电</td><td><strong>{$data->weekaverage}</strong> kW·h</td></tr>
+				<tr class=""><td>预计可使用</td><td><strong>{$remain}</strong> 天</td></tr>
+				<tr class=""><td>更新时间</td><td>{$data->datatime}</td></tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script>
+$(document).ready(function() {
+	
+});
+</script>
+{/if}

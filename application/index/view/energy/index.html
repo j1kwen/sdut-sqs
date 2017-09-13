@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+{include file="public/header" /}
+<style>
+.option-hide {
+	display: none;
+}
+</style>
+<body style="padding-top: 0px;">
+   <div class="container">
+  	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
+	  <h1>宿舍用电查询 
+	  	<small>
+		  <a id="get-info" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom">
+		  	<span style="top: 3px;" class="glyphicon glyphicon-info-sign"></span>
+		  </a>
+		</small>
+	  </h1>
+	</div>
+       <div class="row">
+           <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+               <div class="panel panel-info">
+               	<div class="panel-heading">
+					<h4><span class="glyphicon glyphicon-pencil"></span>&nbsp;请输入信息&nbsp;<small>Info</small></h4>
+				</div>
+				<div class="panel-body">
+				  <div id="alert-area">
+{if condition="!empty($alert)"}
+{foreach $alert as $atm}
+					<div class="alert alert-{$atm['color']|default='success'}{$atm['close']==0?'':' alert-dismissible'}" role="alert">
+					{if condition="$atm['close'] eq 1"}
+					  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					{/if}
+					{if condition="!empty($atm['icon'])"}
+					  <span class="{$atm['icon']}"></span>
+					{/if}
+					{$atm['content']}
+					</div>
+{/foreach}
+{/if}
+				</div>
+					<form class="form" role="form">
+					  <div class="form-group has-feedback col-sm-12" style="margin-top: -6px;">
+					    <div class="input-group">
+					    	<div class="input-group-addon">学号</div>
+					        <input id="ipt-user" type="text" class="form-control" placeholder="学号，仅限在校住宿生">
+					    </div>
+					  </div>
+					  <div class="form-group has-feedback col-sm-5">
+					    <div class="input-group">
+					    	<div class="input-group-addon">校区</div>
+					        <select id="ipt-area" class="form-control">
+							  <option value="west" selected="selected">西校区</option>
+							  <option value="east">东校区</option>
+							</select>
+					    </div>
+					  </div>
+					  <div class="form-group has-feedback col-sm-7">
+					    <div class="input-group">
+					    	<div class="input-group-addon">楼号</div>
+					        <select id="ipt-building" class="form-control">
+							  {foreach $building['west'] as $item}
+							  <option class="option-west" value="{$item['id']}">{$item['text']}</option>
+							  {/foreach}
+							  {foreach $building['east'] as $item}
+							  <option class="option-east option-hide" value="{$item['id']}">{$item['text']}</option>
+							  {/foreach}
+							</select>
+					    </div>
+					  </div>
+					  <div class="form-group has-feedback col-sm-12">
+					    <div class="input-group">
+					    	<div class="input-group-addon">房间</div>
+					        <input id="ipt-room" type="text" class="form-control" placeholder="房间的门牌号，如101">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <div class="col-xs-12">
+					      <button style="width: 100%;" type="button" class="btn btn-{$button['color']} {:empty($button['enable'])?'disabled':''}" id="btn-login">{:empty($button['enable'])?$button['dis_text']:$button['text']}</button>
+					    </div>
+					  </div>
+					</form>
+               </div>
+           </div>
+           <div id="data-area" style="margin-bottom: 50px;">
+           </div>
+       </div>
+
+   </div>
+   </div>
+   <!-- /.container -->
+{include file="public/footer" /}
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#get-info').tooltip({
+		trigger: "click hover focus",
+		title: "可查询指定宿舍的电费余量及使用情况分析。如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~API链接在最下方，认真找哦~"
+	});
+	$("#ipt-user").keypress(function() {
+		var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	    	$("#ipt-area").focus();
+	    }
+	});
+	$("#ipt-room").keypress(function() {
+		var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	    	$("#btn-login").click();
+	    }
+	});
+	$("#btn-login").click(function() {
+		if($(this).hasClass("disabled")) {
+			return;
+		}
+		var nec = $(this).parents("form").find(".has-feedback");
+		var isok = true;
+		nec.each(function() {
+			var ipt = $(this).find("input,select");
+			if(ipt.val() == null || ipt.val() == '') {
+				ipt.after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>');
+				$(this).addClass("has-error");
+				if(isok) {
+					ipt.focus();
+				}
+				isok = false;
+			}
+		});
+		if(!isok) {
+			return;
+		}
+		var _url = "{:url('index/energy/item')}";
+		
+		var _id = $("#ipt-user").val();
+		var _room = $("#ipt-building").val() + $("#ipt-room").val();
+		
+		var _data = "id=" + _id + "&room=" + _room;
+		$("#data-area").html('<div class="loading-icon"></div>');
+		$(this).addClass("disabled");
+		var _this = $(this);
+		var _btn_text = $(this).text();
+		$(this).text(_btn_text + "中…");
+		$.ajax({
+			url: _url,
+			data: _data,
+			method: "POST",
+			success: function(resp) {
+				$("#data-area").html(resp);
+				$(_this).removeClass("disabled");
+				$(_this).text(_btn_text);
+			}, 
+			error: function() {
+				$("#data-area").html('<div class="list-empty"><span class="glyphicon glyphicon-remove-circle"></span>&nbsp;发生错误</div>');
+				$(_this).removeClass("disabled");
+				$(_this).text(_btn_text);
+			}
+		});
+	});
+	
+	$("#ipt-area").change(function() {
+		var _area = $(this).val();
+		$("#ipt-building>option").addClass('option-hide');
+		$("#ipt-building>option.option-"+_area).removeClass('option-hide');
+		$("#ipt-building>option").removeAttr("selected");
+		$("#ipt-building>option.option-"+_area+":first").attr("selected", "selected");
+	});
+	
+});
+</script>
+</body>
+
+</html>
