@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html>
 {include file="public/header" /}
-<style>
-.option-hide {
-	display: none;
-}
-</style>
 <body style="padding-top: 0px;">
    <div class="container">
   	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
@@ -40,7 +35,7 @@
 {/if}
 				</div>
 					<form class="form" role="form">
-					  <div class="form-group has-feedback col-sm-12" style="margin-top: -6px;">
+					  <div class="form-group has-feedback col-sm-12">
 					    <div class="input-group">
 					    	<div class="input-group-addon">学号</div>
 					        <input id="ipt-user" type="text" class="form-control" placeholder="学号，仅限在校住宿生">
@@ -58,12 +53,14 @@
 					  <div class="form-group has-feedback col-sm-7">
 					    <div class="input-group">
 					    	<div class="input-group-addon">楼号</div>
-					        <select id="ipt-building" class="form-control">
+					        <select id="ipt-building-west" class="form-control ipt-building">
 							  {foreach $building['west'] as $item}
-							  <option class="option-west" value="{$item['id']}">{$item['text']}</option>
+							  <option value="{$item['id']}">{$item['text']}</option>
 							  {/foreach}
+							</select>
+							<select id="ipt-building-east" class="form-control ipt-building" style="display: none;">
 							  {foreach $building['east'] as $item}
-							  <option class="option-east option-hide" value="{$item['id']}">{$item['text']}</option>
+							  <option value="{$item['id']}">{$item['text']}</option>
 							  {/foreach}
 							</select>
 					    </div>
@@ -130,8 +127,10 @@ $(document).ready(function() {
 		}
 		var _url = "{:url('index/energy/item')}";
 		
+		var _area = $("#ipt-area").val();
+		
 		var _id = $("#ipt-user").val();
-		var _room = $("#ipt-building").val() + $("#ipt-room").val();
+		var _room = $("#ipt-building-"+_area).val() + $("#ipt-room").val();
 		
 		var _data = "id=" + _id + "&room=" + _room;
 		$("#data-area").html('<div class="loading-icon"></div>');
@@ -158,10 +157,8 @@ $(document).ready(function() {
 	
 	$("#ipt-area").change(function() {
 		var _area = $(this).val();
-		$("#ipt-building>option").addClass('option-hide');
-		$("#ipt-building>option.option-"+_area).removeClass('option-hide');
-		$("#ipt-building>option").removeAttr("selected");
-		$("#ipt-building>option.option-"+_area+":first").attr("selected", "selected");
+		$("select.ipt-building").css('display', 'none');
+		$("#ipt-building-"+_area).css('display', 'block');
 	});
 	
 });
