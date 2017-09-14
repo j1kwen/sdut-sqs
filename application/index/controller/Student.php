@@ -69,12 +69,20 @@ class Student extends BaseController {
 				$pageCnt = ceil(floatval($data->total) / floatval($size));
 			}
 			
-			$logs = model('logs');
-			
-			$_ip = $request->ip();
-			$_url = $request->url(true);
-			
-			$logs->log($_ip, 7, $_id.'['.$_name.']', $_url, 'id='.$_id.'&name='.$_name);
+			if(empty($_page)) {
+				$logs = model('logs');
+				
+				$_ip = $request->ip();
+				$_url = $request->url(true);
+				
+				$logs->log(
+						$_ip, 
+						7, 
+						'['.(empty($_id)?'null':$_id).']['.(empty($_name)?'null':$_name).']['.(empty($code)?strval($data->total):'0').']', 
+						$_url, 
+						'id='.$_id.'&name='.$_name
+				);
+			}
 			
 			$this->assign([
 					'code' => $code,
