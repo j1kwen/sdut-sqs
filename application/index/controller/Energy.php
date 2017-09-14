@@ -75,6 +75,11 @@ class Energy extends BaseController {
 						'href' => 'http://api.dogest.cn/grade/energy.html',
 						'title' => 'API文档',
 				],
+				'footer_extern_link2' => [
+						'href' => 'https://github.com/MeiK-h',
+						'title' => 'The original API provided by MeiK',
+						'icon' => 'glyphicon glyphicon-thumbs-up',
+				],
 				'footer_extern_context' => [
 						
 				],
