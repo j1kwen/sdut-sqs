@@ -26,11 +26,11 @@ class Grade extends BaseController {
 				'alert' => $alert,
 				'button' => $button,
 				'title' => '山东理工大学绩点查询系统',
-				'footer_extern_link' => [
+				'footer_extra_link' => [
 						'href' => 'http://api.dogest.cn/grade/index.html',
 						'title' => 'API文档',
 				],
-				'footer_extern_context' => [
+				'footer_extra_context' => [
 						
 				],
 		]);

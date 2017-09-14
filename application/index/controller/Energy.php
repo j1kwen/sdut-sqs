@@ -71,16 +71,14 @@ class Energy extends BaseController {
 				'button' => $button,
 				'building' => Energy::$build_list,
 				'title' => '学生用电查询',
-				'footer_extern_link' => [
+				'footer_extra_link' => [
 						'href' => 'http://api.dogest.cn/grade/energy.html',
 						'title' => 'API文档',
 				],
-				'footer_extern_link2' => [
-						'href' => 'https://github.com/MeiK-h',
-						'title' => 'The original API provided by MeiK',
-						'icon' => 'glyphicon glyphicon-thumbs-up',
-				],
-				'footer_extern_context' => [
+				'footer_extra_html_content' => 
+						'The original API provided by <a href="https://github.com/MeiK-h" target="_blank" title="Gayhub for MeiK">MeiK</a>.'
+				,
+				'footer_extra_context' => [
 						
 				],
 		]);

@@ -24,7 +24,7 @@ class Apartment extends BaseController {
 				'alert' => $alert,
 				'button' => $button,
 				'title' => '山东理工大学2017级公寓查询',
-				'footer_extern_link' => [
+				'footer_extra_link' => [
 						'href' => url('index/location/location'),
 						'title' => '查看地图',
 						'icon' => 'glyphicon glyphicon-send',
