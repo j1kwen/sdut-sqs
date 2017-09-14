@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+{include file="public/header" /}
+<body style="padding-top: 0px;">
+   <div class="container">
+  	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
+	  <h1>学号姓名查询 
+	  	<small>
+		  <a id="get-info" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom">
+		  	<span style="top: 3px;" class="glyphicon glyphicon-info-sign"></span>
+		  </a>
+		</small>
+	  </h1>
+	</div>
+       <div class="row">
+           <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+               <div class="panel panel-info">
+               	<div class="panel-heading">
+					<h4><span class="glyphicon glyphicon-pencil"></span>&nbsp;请输入信息&nbsp;<small>Name</small></h4>
+				</div>
+				<div class="panel-body">
+				  <div id="alert-area">
+{if condition="!empty($alert)"}
+{foreach $alert as $atm}
+					<div class="alert alert-{$atm['color']|default='success'}{$atm['close']==0?'':' alert-dismissible'}" role="alert">
+					{if condition="$atm['close'] eq 1"}
+					  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					{/if}
+					{if condition="!empty($atm['icon'])"}
+					  <span class="{$atm['icon']}"></span>
+					{/if}
+					{$atm['content']}
+					</div>
+{/foreach}
+{/if}
+				</div>
+					<form class="form" role="form">
+					  <div class="form-group has-feedback col-sm-12">
+					    <div class="input-group">
+					    	<div class="input-group-addon">学号</div>
+					        <input id="ipt-id" type="text" class="form-control" placeholder="学号，限在校学生，可模糊匹配 ">
+					    </div>
+					  </div>
+					  <div class="form-group has-feedback col-sm-12">
+					    <div class="input-group">
+					    	<div class="input-group-addon">姓名</div>
+					        <input id="ipt-name" type="text" class="form-control" placeholder="学生姓名，可模糊匹配">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <div class="col-xs-12">
+					      <button style="width: 100%;" type="button" class="btn btn-{$button['color']} {:empty($button['enable'])?'disabled':''}" id="btn-login">{:empty($button['enable'])?$button['dis_text']:$button['text']}</button>
+					    </div>
+					  </div>
+					</form>
+               </div>
+           </div>
+           <div id="data-area" style="margin-bottom: 50px;">
+           </div>
+       </div>
+
+   </div>
+   </div>
+   <!-- /.container -->
+{include file="public/footer" /}
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#get-info').tooltip({
+		trigger: "click hover focus",
+		title: "可以根据学号和姓名模糊匹配学生信息，请勿将信息用于非法用途！如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~最下方有地图入口，认真找哦~"
+	});
+	$("#ipt-id, #ipt-name").change(function() {
+		if(!(($("#ipt-name").val() == null || $("#ipt-name").val() == "") &&
+		   ($("#ipt-id").val() == null || $("#ipt-id").val() == ""))) {
+			$("#ipt-name").parent().removeClass("has-error").find("span.form-control-feedback").remove();
+			$("#ipt-id").parent().removeClass("has-error").find("span.form-control-feedback").remove();
+		}
+	});
+	$("#ipt-id").keypress(function() {
+		var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	    	$("#ipt-name").focus();
+	    }
+	});
+	$("#ipt-name").keypress(function() {
+		var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	    	$("#btn-login").click();
+	    }
+	});
+	$("#btn-login").click(function() {
+		if($(this).hasClass("disabled")) {
+			return;
+		}
+		if(($("#ipt-name").val() == null || $("#ipt-name").val() == "") &&
+		   ($("#ipt-id").val() == null || $("#ipt-id").val() == "")) {
+			
+			$("#ipt-name").after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>');
+			$("#ipt-id").after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>');
+			
+			$("#ipt-name").parent().addClass("has-error");
+			$("#ipt-id").parent().addClass("has-error");
+			
+			$("ipt-id").focus();
+			return false;
+		}
+		var _url = "{:url('index/student/info')}";
+		
+		var _name = $("#ipt-name").val();
+		var _id = $("#ipt-id").val();
+		
+		var _data = "name=" + _name + "&id=" + _id;
+		$("#data-area").html('<div class="loading-icon"></div>');
+		$(this).addClass("disabled");
+		var _this = $(this);
+		var _btn_text = $(this).text();
+		$(this).text(_btn_text + "中…");
+		$.ajax({
+			url: _url,
+			data: _data,
+			method: "POST",
+			success: function(resp) {
+				$("#data-area").html(resp);
+				$(_this).removeClass("disabled");
+				$(_this).text(_btn_text);
+			}, 
+			error: function() {
+				$("#data-area").html('<div class="list-empty"><span class="glyphicon glyphicon-remove-circle"></span>&nbsp;发生错误</div>');
+				$(_this).removeClass("disabled");
+				$(_this).text(_btn_text);
+			}
+		});
+	});
+	
+});
+</script>
+</body>
+
+</html>

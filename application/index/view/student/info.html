@@ -1,29 +1,35 @@
-{if condition="empty($list)"}
+{if condition="$code neq 0"}
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <span class="glyphicon glyphicon-remove-circle"></span>&nbsp;
+  {$message}&nbsp;({$status})
+</div>
+{elseif condition="empty($list)"}
 {include file="public/list_empty"}
 {else /}
 <table class="table table-hover table-bordered" style="margin-bottom: 0px;">
 <thead>
 <tr>
-<th>IP</th>
-<th>归属地</th>
-<th>内容</th>
-<th>时间</th>
+<th>学号</th>
+<th>姓名</th>
+<th>性别</th>
+<th>班级</th>
 </tr>
 </thead>
 <tbody>
 {foreach name="list" item="item" key="key"}
 
 	<tr>
-		<td>{$item.ip}</td>
-		<td class="location-col"><a href="javascript:void(0);" class="btn-ip-info" title="点击查看归属地"><span class="glyphicon glyphicon-eye-open"></span></a></td>
-		<td>{$item.content}</td>
-		<td>{$item.dt}</td>
+		<td>{$item->id}</td>
+		<td>{$item->name}</td>
+		<td>{$item->gender}</td>
+		<td>{$item->cls}</td>
 	</tr>
 
 {/foreach}
 </tbody>
 </table>
-<nav aria-label="Page navigation" class="nav-log-pager" data-type="{$type}" data-size="{$size}" data-page="{$page}">
+<nav aria-label="Page navigation" class="nav-log-pager" data-size="{$size}" data-page="{$page}" data-id="{$id}" data-name="{$name}">
   <ul class="pagination">
     <li class="{$page==1?'disabled':''}">
       <a href="javascript:void(0);" aria-label="Previous" data-page="{$page==1?'1':$page-1}">
@@ -72,14 +78,16 @@ $(document).ready(function() {
 		if($(this).parent().hasClass("disabled")) {
 			return false;
 		}
-		var _parent = $(this).parents(".tab-pane");
+		var _parent = $("#data-area");
 		var _page = $(this).attr("data-page");
 		var _size = $(this).parents(".nav-log-pager").attr("data-size");
-		var _type = $(this).parents(".nav-log-pager").attr("data-type");
-		var _data = "page=" + _page + "&size=" + _size + "&type=" + _type;
+		var _id = $(this).parents(".nav-log-pager").attr("data-id");
+		var _name = $(this).parents(".nav-log-pager").attr("data-name");
+		
+		var _data = "page=" + _page + "&size=" + _size + "&id=" + _id + "&name=" + _name;
 		$(_parent).html('<div class="loading-icon"></div>');
 		$.ajax({
-			url: "{:url('index/logs/item')}",
+			url: "{:url('index/student/info')}",
 			data: _data,
 			method: "POST",
 			success: function(resp) {
@@ -89,38 +97,6 @@ $(document).ready(function() {
 				$(_parent).html('<div class="list-empty"><span class="glyphicon glyphicon-remove-circle"></span>&nbsp;发生错误</div>');
 			}
 		});
-	});
-
-	$("#badge-access").text("{$cnt[0]['val']}");
-	$("#badge-search-self").text("{$cnt[1]['val']}");
-	$("#badge-search-roommate").text("{$cnt[2]['val']}");
-	$("#badge-love").text("{$cnt[3]['val']}");
-	$("#badge-map").text("{$cnt[4]['val']}");
-	$("#badge-grade").text("{$cnt[5]['val']}");
-	$("#badge-energy").text("{$cnt[6]['val']}");
-	var _local = "http://api.dogest.cn/grade/ip/query?ip=";
-	$(".btn-ip-info").click(function() {
-		var _ip = $(this).parent().prev().text();
- 		var _self = $(this).parent();
-		$(this).parent().html('<div class="loading-icon" style="height: 0px;"></div>');
- 		$.ajax({
-			type: "get",
- 			url: _local + _ip,
-			dataType: "json",
-			success: function(resp) {
- 				if(resp.code == 0) {
- 					// success
- 					var prefix = "";
- 					if(resp.data.country_id != 'CN') {
- 						prefix = resp.data.country;
- 					}
- 					var _str =  prefix + resp.data.region + " " + resp.data.city + " " + resp.data.isp;
- 					$(_self).html(_str);
- 				} else {
- 					$(_self).html('<span class="glyphicon glyphicon-remove-circle"></span>');
- 				}
-			}
- 		});
 	});
 });
 </script>
