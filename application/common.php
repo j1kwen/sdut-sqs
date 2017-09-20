@@ -26,7 +26,7 @@ function color_class($grade) {
 	} else {
 		if($grade=="免修") {
 			return "info";
-		} else if($grade == "不及格" || $grade == "不合格" || $grade == "缺考" || $grade == "休学") {
+		} else if($grade == "不及格" || $grade == "不合格" || $grade == "缺考" || $grade == "休学" || $grade == "未选" || $grade == "-") {
 			return "danger";
 		} else if($grade == "缓考") {
 			return "warning";
