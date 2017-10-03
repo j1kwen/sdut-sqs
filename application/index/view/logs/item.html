@@ -123,5 +123,10 @@ $(document).ready(function() {
 			}
  		});
 	});
+	var tab_width = 0;
+	$("#ul-tab>li").each(function() {
+		tab_width += $(this).width() + 0.5;
+	});
+	$("#ul-tab").width(tab_width);
 });
 </script>

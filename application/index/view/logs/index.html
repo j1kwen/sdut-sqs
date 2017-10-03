@@ -11,8 +11,10 @@
 	</div>
 	<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
 	
+	  <div style="overflow-x: auto;">
+	  
 	  <!-- Nav tabs -->
-	  <ul class="nav nav-tabs" role="tablist">
+	  <ul class="nav nav-tabs" role="tablist" id="ul-tab">
 	    <li role="presentation" class="active"><a href="#log-access" aria-controls="log-access" role="tab" data-toggle="tab">访问 <span class="badge" id="badge-access"></span></a></li>
 	    <li role="presentation"><a href="#log-search-self" aria-controls="log-search-self" role="tab" data-toggle="tab">查宿舍 <span class="badge" id="badge-search-self"></span></a></li>
 	    <li role="presentation"><a href="#log-search-roommate" aria-controls="log-search-roommate" role="tab" data-toggle="tab">査室友 <span class="badge" id="badge-search-roommate"></span></a></li>
@@ -22,6 +24,7 @@
 	    <li role="presentation"><a href="#log-energy" aria-controls="log-energy" role="tab" data-toggle="tab">查电量 <span class="badge" id="badge-energy"></span></a></li>
 	  	<li role="presentation"><a href="#log-student" aria-controls="log-student" role="tab" data-toggle="tab">查信息 <span class="badge" id="badge-student"></span></a></li>
 	  </ul>
+	  </div>
 	
 	  <!-- Tab panes -->
 	  <div class="tab-content">
@@ -83,6 +86,7 @@ $(document).ready(function() {
 		});
 	});
 	$("a[href='#log-access']").click();
+
 });
 </script>
 </body>
