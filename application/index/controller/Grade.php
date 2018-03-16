@@ -22,6 +22,8 @@ class Grade extends BaseController {
 		$alert = $m_alert->getAlert('grade');
 		$button = $m_button->getButton('grade');
 		
+		$logo = $request->param('logo','');
+		
 		$this->assign([
 				'alert' => $alert,
 				'button' => $button,
@@ -33,6 +35,7 @@ class Grade extends BaseController {
 				'footer_extra_context' => [
 						
 				],
+				'logo' => $logo,
 		]);
 		
 		return $this->fetch();
