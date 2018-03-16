@@ -12,12 +12,10 @@ a:hover, a:focus {
 </style>
    <div class="container">
   	<div class="page-header col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0" style="margin-top: 5px;">
-  	  
-	  <h1>
-	    {if condition="!empty($logo)"}
-	    <a><img height="45px" width="45px" src="__STATIC__/img/{$logo}.png"/></a>&nbsp;&nbsp;
-	    {/if}
-	    绩点查询 
+  	  {if condition="!empty($logo)"}
+	    <a href="javascript:void(0);"><img class="img-responsive" src="__STATIC__/img/{$logo}.png"/></a>
+	  {/if}
+	  <h1{if condition="!empty($logo)"} style="margin-top:0px;"{/if}>绩点查询 
 	  	<small>2014-17级
 		  <a id="get-info" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom">
 		  	<span style="top: 3px;" class="glyphicon glyphicon-info-sign"></span>
