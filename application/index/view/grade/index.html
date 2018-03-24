@@ -16,9 +16,9 @@
 	  </h1>
 	</div>
        <div class="row">
-           <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+           <div id="main-panel-area" class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
            		
-               <div class="panel panel-info">
+               <div id="req-info-area" class="panel panel-info">
                	<div class="panel-heading">
 					<h4><span class="glyphicon glyphicon-user"></span>&nbsp;请输入学号&nbsp;<small>Stu.ID</small></h4>
 				</div>
@@ -72,6 +72,8 @@ $(document).ready(function() {
 	function queryByParam() {
 	    var id = getQueryString('id');
 	    if (id) {
+	    	$('#alert-area').prependTo('#main-panel-area');
+	    	$('#req-info-area').hide();
 	        $("#ipt-id").val(id);
 	        $("#btn-login").click();
 	    }
