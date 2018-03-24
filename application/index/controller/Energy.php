@@ -4,6 +4,7 @@ namespace app\index\controller;
 
 use app\index\controller\BaseController;
 use think\Request;
+use app\index\model\Auth;
 
 class Energy extends BaseController {
 	
@@ -81,6 +82,7 @@ class Energy extends BaseController {
 				'footer_extra_context' => [
 						
 				],
+				'has_login' => Auth::login(),
 		]);
 		
 		return $this->fetch();

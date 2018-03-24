@@ -359,4 +359,8 @@ $(document).ready(function() {
 		});
 	}
 	loadItem();
+	
+	$("#btn-require-user-login").click(function() {
+		alert("222");
+	});
 });

@@ -4,6 +4,7 @@ namespace app\index\controller;
 
 use think\Controller;
 use think\Request;
+use app\index\model\Auth;
 
 class Grade extends BaseController {
 	
@@ -36,6 +37,7 @@ class Grade extends BaseController {
 						
 				],
 				'logo' => $logo,
+				'has_login' => Auth::login(),
 		]);
 		
 		return $this->fetch();

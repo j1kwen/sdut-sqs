@@ -22,7 +22,7 @@ class Index extends BaseController {
 				'title' => '山东理工大学学生信息查询系统  - SDUT SQS',
     			'footer_extra_link' => [
     					'title' => '联系作者',
-    					'href' => 'mailto:763461297@qq.com?subject=【学生查询系统】问题反馈',
+    					'href' => 'mailto:10000@dogest.cn?subject=【学生查询系统】问题反馈',
     					'icon' => 'glyphicon glyphicon-envelope',
     					'target' => '_self',
     			],
@@ -31,6 +31,7 @@ class Index extends BaseController {
     					'icon' => 'glyphicon glyphicon-cog',
     					'title' => '后台管理',
     			],
+    			'has_login' => Auth::login(),
     	]);
     	return $this->fetch();
     }
@@ -85,20 +86,6 @@ class Index extends BaseController {
     	} else {
     		$this->error();
     	}
-    }
-    
-    public function test() {
-    	
-    	$this->assign([
-    			'title' => '山东理工大学学生信息查询系统  - SDUT SQS',
-    			'footer_extra_link' => [
-    					'title' => '联系作者',
-    					'href' => 'mailto:763461297@qq.com?subject=【学生查询系统】问题反馈',
-    					'icon' => 'glyphicon glyphicon-envelope',
-    					'target' => '_self',
-    			],
-    	]);
-    	return $this->fetch('index/index');
     }
     
     public function mmd() {
