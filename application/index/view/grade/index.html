@@ -71,6 +71,7 @@ $(document).ready(function() {
 	}
 	function queryByParam() {
 	    var id = GetQueryString('id');
+	    var id = getQueryString('id');
 	    if (id) {
 	        $("#ipt-id").val(id);
 	        $("#btn-login").click();
