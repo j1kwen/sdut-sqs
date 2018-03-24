@@ -62,6 +62,21 @@
 {include file="public/footer" /}
 <script>
 $(document).ready(function() {
+	function getQueryString(name) {
+	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+	    var r = window.location.search.substr(1).match(reg);
+	    if (r != null)
+	        return unescape(r[2]);
+	    return null;
+	}
+	function queryByParam() {
+	    var id = GetQueryString('id');
+	    if (id) {
+	        $("#ipt-id").val(id);
+	        $("#btn-login").click();
+	    }
+	}
+	queryByParam();
 	$('#get-info').tooltip({
 		trigger: "click hover focus",
 		title: "绩点小于60分无法毕业，60分及以上可获毕业证，70分及以上可获得学位证。某些专业可能要求修满一定的公选课学分方可毕业。该系统也能查成绩，二专也可以查哦~如果你觉得此次查询对你有帮助，那就请点击页面最下方的Designer贡献一个鼓励么么哒吧~API链接在最下方~更多功能，请自行挖掘~"
